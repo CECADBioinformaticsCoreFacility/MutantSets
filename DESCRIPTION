@@ -1,0 +1,34 @@
+Package: MutantSets
+Title: What the Package Does (One Line, Title Case)
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "Richard J.",
+           family = "Acton",
+           role = c("aut", "cre"),
+           email = "richardjacton@pm.me",
+           comment = c(ORCID = "0000-0002-2574-9611"))
+Description: What the package does (one paragraph).
+License: CC BY 4.0
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
+Depends: 
+    shiny,
+    shinydashboard,
+    dplyr
+Imports: 
+    shinybusy,
+    shinyWidgets,
+    shinyjs,
+    purrr,
+    tidyr,
+    DT,
+    vroom,
+    vcfR,
+    future,
+    ggplot2,
+    plotly,
+    scales,
+    tibble,
+    V8

@@ -33,7 +33,7 @@ library(purrr)
 library(ggplot2)
 library(scales)
 
-library(ggiraph)
+#library(ggiraph)
 library(plotly)
 
 library(dplyr)
@@ -121,13 +121,36 @@ gtformfun <- function(dt, id) {
 		DT::formatStyle(
 			id, id,
 			backgroundColor = DT::styleEqual(
-				c("0/0", "0/1", "1/0", "1/1"),
-				c("#458B00","#FF7F00","#FF7F00", "#CD3333")
+				c("0/0", "0/1", "1/1"),
+				c("#458B00","#FF7F00", "#CD3333")
 			),
 			backgroundSize = '98% 88%',
 			backgroundRepeat = 'no-repeat',
 			backgroundPosition = 'center'
 		)
+}
+
+## | Multi genotype locus handeling -------------------------------------------
+splitGeno <- function(dfr) {
+	spltcls <- dfr %>% 
+		as.list() %>% 
+		map(~{ # only split character vectors - keeps types consistent later
+			if(is.character(.x)){
+				strsplit(.x, ",")[[1]]
+			} else {
+				.x
+			}
+		})
+	EFF <- character(length = length(spltcls$ALT))
+	# genotypes alternate in the eff string so assigning every Nth value to genotype N
+	for (i in seq_along(spltcls$ALT)) {
+		EFF[i] <- paste0(
+			spltcls$EFF[seq(i, length(spltcls$EFF), by = length(spltcls$ALT))],
+			collapse = ","
+		)
+	}
+	spltcls$EFF <- EFF
+	spltcls %>% as_tibble()
 }
 
 ## | Deletion filtering -------------------------------------------------------
@@ -274,7 +297,7 @@ body <- dashboardBody(
 							)
 						),
 						#plotOutput("chrplot", click = "chrplotclick")#,
-						plotlyOutput("chrplot"),
+						plotly::plotlyOutput("chrplot"),
 						#verbatimTextOutput("chrplot_sel")
 						actionButton("reset","Reset Point selection")#,
 						#verbatimTextOutput("chrplot_click")
@@ -391,24 +414,46 @@ server <- function(input, output) {
 		tagList(selector)
 	})
 	
-	multiVarLoci <- reactive({
-		vcftidy()$dat %>%
-			filter(NUMALT > 1)
-	})
+	# multiVarLoci <- reactive({
+	# 	vcftidy()$dat %>%
+	# 		filter(NUMALT > 1)
+	# 		group_by(pos) %>%
+	# 		group_split() %>%
+	# 		map_dfr(splitGeno)
+	# })
 	
 	allLoci <- reactive({
 		nms <- colnames(vcftidy()$dat)
 		gts <- nms[grepl("gt_", nms)]
 		gts <- gts[gts != "gt_GT"]
-		vcftidy()$dat %>%
+		
+		vcftidy_wide <- vcftidy()$dat %>%
 			###!!!! Need to Handle Multiple Values here!!!
-			filter(NUMALT <= 1) %>% 
-			mutate(AF = as.numeric(AF)) %>%
+			#filter(NUMALT <= 1) %>% 
+			#mutate(AF = as.numeric(AF)) %>%
 			tidyr::unite(pos, CHROM, POS, sep = "_", remove = FALSE) %>%
 			select(-all_of(gts)) %>%
 			tidyr::pivot_wider(
 				names_from = Indiv, values_from = gt_GT
 			)
+		
+		vcftidy_wide %>%
+			filter(NUMALT > 1) %>%
+			group_by(pos) %>%
+			group_split() %>%
+			map_dfr(splitGeno) %>%
+			bind_rows(vcftidy_wide %>% filter(NUMALT <= 1)) %>%
+			mutate(AF = as.numeric(AF))
+			
+		# vcftidy()$dat %>%
+		# 	###!!!! Need to Handle Multiple Values here!!!
+		# 	filter(NUMALT <= 1) %>% 
+		# 	mutate(AF = as.numeric(AF)) %>%
+		# 	tidyr::unite(pos, CHROM, POS, sep = "_", remove = FALSE) %>%
+		# 	select(-all_of(gts)) %>%
+		# 	tidyr::pivot_wider(
+		# 		names_from = Indiv, values_from = gt_GT
+		# 	)
 	})
 	
 	locusGenoTypes <- reactive({
@@ -471,12 +516,12 @@ server <- function(input, output) {
 	## Chr plot ----------------------------------------
 	#output$testpoints <- renderPrint(print(input$chrplotclick))
 	#output$chrplot <- renderPlot({
-	output$chrplot <- renderPlotly({
+	output$chrplot <- plotly::renderPlotly({
 	#output$chrplot <- renderGirafe({
 		plot <- loci() %>%
 			lociPlot()
 		#plot
-		ggplotly(plot)
+		plotly::ggplotly(plot)
 		#girafe(code = print(plot))
 	})
 	
