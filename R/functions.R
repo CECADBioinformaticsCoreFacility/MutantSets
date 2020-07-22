@@ -108,6 +108,35 @@ splitGeno <- function(dfr) {
 	spltcls %>% tibble::as_tibble()
 }
 
+lociByGenotype <- function(df) {
+	nms <- colnames(df)
+	gts <- nms[grepl("gt_", nms)]
+	gts <- gts[gts != "gt_GT"]
+	
+	vcftidy_wide <- df %>%
+		#mutate(POS = as.integer(POS)) %>%
+		tidyr::unite(pos, CHROM, POS, sep = "_", remove = FALSE) %>%
+		dplyr::select(-all_of(gts)) %>%
+		tidyr::pivot_wider(
+			names_from = Indiv, values_from = gt_GT
+		)
+	
+	vcftidy_wide %>%
+		dplyr::filter(NUMALT > 1) %>%
+		dplyr::group_by(pos) %>%
+		dplyr::group_split() %>%
+		purrr::map_dfr(splitGeno) %>%
+		#readr::type_convert() %>%
+		mutate(
+			POS = as.integer(POS),
+			QUAL = as.double(QUAL),
+			AC = as.character(AC)
+		) %>%
+		dplyr::bind_rows(vcftidy_wide %>% dplyr::filter(NUMALT <= 1)) %>%
+		dplyr::mutate(AF = as.numeric(AF)) %>%
+		dplyr::arrange(desc(AF), desc(QUAL), CHROM, POS)
+}
+
 ## | Deletion filtering -------------------------------------------------------
 categoriseSample <- function(x, nm) {
 	nm <- gsub("sample_(.*)", "\\1", nm)

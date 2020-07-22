@@ -66,38 +66,7 @@ server <- function(input, output) {
 	# })
 	
 	allLoci <- reactive({
-		nms <- colnames(vcftidy()$dat)
-		gts <- nms[grepl("gt_", nms)]
-		gts <- gts[gts != "gt_GT"]
-		
-		vcftidy_wide <- vcftidy()$dat %>%
-			###!!!! Need to Handle Multiple Values here!!!
-			#filter(NUMALT <= 1) %>% 
-			#mutate(AF = as.numeric(AF)) %>%
-			tidyr::unite(pos, CHROM, POS, sep = "_", remove = FALSE) %>%
-			dplyr::select(-all_of(gts)) %>%
-			tidyr::pivot_wider(
-				names_from = Indiv, values_from = gt_GT
-			)
-		
-		vcftidy_wide %>%
-			dplyr::filter(NUMALT > 1) %>%
-			dplyr::group_by(pos) %>%
-			dplyr::group_split() %>%
-			purrr::map_dfr(splitGeno) %>%
-			dplyr::bind_rows(vcftidy_wide %>% dplyr::filter(NUMALT <= 1)) %>%
-			dplyr::mutate(AF = as.numeric(AF)) %>%
-			dplyr::arrange(AF, QUAL, CHROM, POS)
-		
-		# vcftidy()$dat %>%
-		# 	###!!!! Need to Handle Multiple Values here!!!
-		# 	filter(NUMALT <= 1) %>% 
-		# 	mutate(AF = as.numeric(AF)) %>%
-		# 	tidyr::unite(pos, CHROM, POS, sep = "_", remove = FALSE) %>%
-		# 	select(-all_of(gts)) %>%
-		# 	tidyr::pivot_wider(
-		# 		names_from = Indiv, values_from = gt_GT
-		# 	)
+		lociByGenotype(vcftidy()$dat)
 	})
 	
 	locusGenoTypes <- reactive({
