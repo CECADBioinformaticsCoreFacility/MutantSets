@@ -80,6 +80,26 @@ server <- function(input, output) {
 				all_of(samples())
 			)
 	})
+	#
+	
+	output$total_vb <- renderValueBox({
+		req(input$vcf)
+		valueBox(
+			#width = 8,
+			format(nrow(allLoci()), big.mark = ","),
+			"Total Variants", icon = icon("dna"),
+			color = "purple"
+		)
+	})
+	
+	output$nfiltered_vb <- renderValueBox({
+		req(input$vcf)
+		valueBox(
+			#width = 8,
+			format(nrow(loci()), big.mark = ","),
+			"Filtered Variants", icon = icon("dna")
+		)
+	})
 	
 	tolisten <- reactive({
 		#lapply(samples(), function(x){ paste0("sample_", x) })
@@ -136,6 +156,10 @@ server <- function(input, output) {
 		#plot
 		plotly::ggplotly(plot)
 		#girafe(code = print(plot))
+	})
+	
+	output$mutTypeFreqPlot <- renderPlotly({
+		mutTypeFreqPlot(loci())
 	})
 	
 	# output$chrplot_sel <- renderPrint({

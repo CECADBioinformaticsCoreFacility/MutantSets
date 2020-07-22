@@ -89,7 +89,21 @@ body <- dashboardBody(
 						"sets"
 					),
 					tabPanel(
-						"Var types"
+						"Variant Types",
+						fluidRow(
+							#column(width = 1),
+							column(width = 8,
+								plotly::plotlyOutput("mutTypeFreqPlot")
+							),
+							column(width = 3,
+								fluidRow(
+									valueBoxOutput("total_vb", width = "80%")
+								),
+								fluidRow(
+									valueBoxOutput("nfiltered_vb", width = "80%")
+								)
+							)
+						)
 					)
 				)
 			),

@@ -177,7 +177,7 @@ delFeatFun <- function(df, sampids, lst) {
 }
 
 ## | Plots --------------------------------------------------------------------
-lociPlot <- function(df) {
+lociPlot <- function(df) { ## var_type_colours !! global
 	ggplot2::ggplot(df, ggplot2::aes(POS, AF)) + 
 		ggplot2::geom_point(ggplot2::aes(colour = TYPE, alpha = QUAL)) + 
 		#geom_point_interactive(aes(colour = TYPE, alpha = QUAL)) + 
@@ -192,4 +192,30 @@ lociPlot <- function(df) {
 			x = "Position (bp)",
 			y = "Allele Frequency"
 		)
+}
+
+
+# mutTypeFreqPlot
+mutTypeFreqPlot <- function(df) { ## var_type_colours !! global
+	df %>%
+		dplyr::count(TYPE) %>% 
+		dplyr::mutate(
+			pc = (n/sum(n)) * 100
+		) %>% { 
+			ggplot2::ggplot(., aes(TYPE, n)) + 
+				ggplot2::geom_col(
+					ggplot2::aes(
+						fill = TYPE,
+						text = sprintf(
+							"%.1f%% %s (N = %s)",
+							pc, TYPE, format(n, big.mark = ",")
+						)
+					)
+				) + 
+				ggplot2::scale_fill_manual(values = var_type_colours) + 
+				ggplot2::theme_minimal() + 
+				ggplot2::theme(legend.position = "bottom") + 
+				ggplot2::labs(x = "Type", y = "Number of Mutations")
+		} %>%
+		plotly::ggplotly(tooltip = "text")
 }
