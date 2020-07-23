@@ -1,8 +1,8 @@
 # Server ----------------------------------------------------------------------
 server <- function(input, output) {
-	# Options ---------------------------------------------------------------------
+	# Options -----------------------------------------------------------------
 	options(shiny.maxRequestSize = Inf) # Do not limit file size
-	# Input pre-processing --------------------------------------------------------
+	# Input pre-processing ----------------------------------------------------
 	vcf <- reactive({ # Parse VCF
 		req(input$vcf)
 		vcfin <- vcfR::read.vcfR(input$vcf$datapath, verbose = FALSE)
@@ -24,7 +24,7 @@ server <- function(input, output) {
 		req(input$vcf)
 		unique(vcftidy()$dat$CHROM)
 	})
-	# Genotype filtering ----------------------------------------------------------
+	# Genotype filtering ------------------------------------------------------
 	## set sample names
 	output$renameUI <- renderUI({
 		req(sample_vars_tolisten())
@@ -112,7 +112,7 @@ server <- function(input, output) {
 		#dplyr::pull(pos)
 	})
 	
-	# |Download data ---------------------------------------------------------
+	# |Download data ----------------------------------------------------------
 	output$downloadData <- downloadHandler(
 		filename = "selected_mutants.tsv",
 		content = function(file) {
@@ -154,24 +154,13 @@ server <- function(input, output) {
 	
 	#output$chrplot_click <- renderText(names(chrplot_click()))
 	
-	filtered_vars <- reactive({
-		req(input$filtVarsDT_row_last_clicked)
-		#req(input$filtVarsDT_rows_selected)
-		df <- loci() %>% 
-			dplyr::slice(input$filtVarsDT_row_last_clicked) %>%
-			#dplyr::slice(input$filtVarsDT_rows_selected) %>%
-			dplyr::pull(EFF) %>%
-			effExtractor() %>%
-			dplyr::select(-Amino_Acid_Length, -ERRORS, -WARNINGS, -Genotype_Number)
-		
-	})
 	## Variant effect annotation --------------------------------
 	output$effect <- DT::renderDataTable({
 		req(input$filtVarsDT_row_last_clicked)
 		gen_var_eff_DT(loci(), input$filtVarsDT_row_last_clicked)
 	})
 	
-	## vars tab -------------------------
+	## main variants tab -------------------------
 	output$col_picker <- renderUI({
 		variant_column_selector(vcftidy()$meta)
 	})
@@ -206,7 +195,6 @@ server <- function(input, output) {
 	})
 	
 	output$filteredDels <- DT::renderDataTable({
-		#gff() %>% DT::datatable(rownames = FALSE)
 		delTab() %>% DT::datatable(rownames = FALSE)
 	})
 	
