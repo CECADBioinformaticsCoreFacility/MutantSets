@@ -11,7 +11,6 @@
 
 - [ ] description of filtering citeria/process (code? ~ shinymeta)
 - [ ] set membership plot - which sets
-- [ ] mutation types proportion
 - [ ] show full gt table in Tab box
 - [ ] wormbase links? ~ tricky due to mixed transcript/gene names
 - [ ] Download button deletion/multivar
@@ -20,10 +19,11 @@
 
 ## Partial implementation needs follow-up
 
-- [ ] name samples - __display bug on null__
 
 ## completed
 
+- [x] name samples - __display bug on null__
+- [x] mutation types proportion
 - [x] deletion filtering
 - [x] packageise
 - [x] pick columns to show (use $meta)
