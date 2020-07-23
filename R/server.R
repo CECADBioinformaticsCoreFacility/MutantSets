@@ -16,6 +16,10 @@ server <- function(input, output) {
 		vcftidy()$dat %>% dplyr::distinct(Indiv) %>% dplyr::pull()
 	})
 	
+	sample_vars_tolisten <- reactive({
+		lapply(samples(), function(x){ input[[paste0("sample_", x)]] })
+	})
+	
 	chrs <- reactive({
 		req(input$vcf)
 		unique(vcftidy()$dat$CHROM)
@@ -23,6 +27,7 @@ server <- function(input, output) {
 	# Genotype filtering ----------------------------------------------------------
 	## set sample names
 	output$renameUI <- renderUI({
+		req(sample_vars_tolisten())
 		alias_samples(samples())
 	})
 	
@@ -75,12 +80,8 @@ server <- function(input, output) {
 		)
 	})
 	
-	tolisten <- reactive({
-		#lapply(samples(), function(x){ paste0("sample_", x) })
-		lapply(samples(), function(x){ input[[paste0("sample_", x)]] })
-	})
-	
-	filtfun <- eventReactive(tolisten(),{
+
+	filtfun <- eventReactive(sample_vars_tolisten(),{
 		function(dff, sampids) {
 			for (i in seq_along(sampids)) {
 				inval <- input[[paste0("sample_", sampids[i])]]
@@ -267,7 +268,7 @@ server <- function(input, output) {
 			)
 	})
 	
-	genotypeFilterInputs <- eventReactive(tolisten(), {
+	genotypeFilterInputs <- eventReactive(sample_vars_tolisten(), {
 		lst <- map(samples(), ~input[[paste0("sample_", .x)]])
 		names(lst) <- paste0("sample_", samples())
 		lst
