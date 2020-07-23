@@ -28,26 +28,7 @@ server <- function(input, output) {
 	
 	# Genotype filters UI
 	output$setSelector <- renderUI({
-		selector <- lapply(samples(), function(sampid) {
-			label <- paste0("Genotypes to Include for ", sampid)
-			if(!is.null(input[[paste0("alias_", sampid)]])) { # input is not null prior to user setting values?
-				label <- paste0(
-					"Genotypes to Include for ", sampid,
-					" (", input[[paste0("alias_", sampid)]], ")" # bug parens are appearing without content
-				)
-			}
-			shinyWidgets::checkboxGroupButtons(
-				inputId = paste0("sample_", sampid),
-				label = label, 
-				choices = c("0/0", "0/1", "1/1"), 
-				justified = TRUE, status = "primary",
-				checkIcon = list(
-					yes = icon("ok", lib = "glyphicon"),
-					no = icon("remove", lib = "glyphicon")
-				)
-			)
-		})
-		tagList(selector)
+		genotype_selector(samples(), input)
 	})
 	
 	# multiVarLoci <- reactive({

@@ -247,3 +247,27 @@ alias_samples <- function(samples) {
 	})
 	tagList(renamers)
 }
+
+
+genotype_selector <- function(samples, input) {
+	selector <- lapply(samples, function(sampid) {
+		label <- paste0("Genotypes to Include for ", sampid)
+		if(input[[paste0("alias_", sampid)]] != "") {
+			label <- paste0(
+				"Genotypes to Include for ", sampid,
+				" (", input[[paste0("alias_", sampid)]], ")"
+			)
+		}
+		shinyWidgets::checkboxGroupButtons(
+			inputId = paste0("sample_", sampid),
+			label = label, 
+			choices = c("0/0", "0/1", "1/1"), 
+			justified = TRUE, status = "primary",
+			checkIcon = list(
+				yes = icon("ok", lib = "glyphicon"),
+				no = icon("remove", lib = "glyphicon")
+			)
+		)
+	})
+	tagList(selector)
+}
