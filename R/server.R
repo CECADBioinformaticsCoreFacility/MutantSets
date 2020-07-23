@@ -41,11 +41,11 @@ server <- function(input, output) {
 	# 		filter(NUMALT > 1)
 	# 		group_by(pos) %>%
 	# 		group_split() %>%
-	# 		map_dfr(splitGeno)
+	# 		map_dfr(split_geno)
 	# })
 	
 	allLoci <- reactive({
-		lociByGenotype(vcftidy()$dat)
+		loci_by_genotype(vcftidy()$dat)
 	})
 	
 	locusGenoTypes <- reactive({
@@ -126,14 +126,14 @@ server <- function(input, output) {
 	output$chrplot <- plotly::renderPlotly({
 		#output$chrplot <- renderGirafe({
 		plot <- loci() %>%
-			lociPlot()
+			loci_plot()
 		#plot
 		plotly::ggplotly(plot)
 		#girafe(code = print(plot))
 	})
 	
 	output$mutTypeFreqPlot <- renderPlotly({
-		mutTypeFreqPlot(loci())
+		mut_type_freq_plot(loci())
 	})
 	
 	# output$chrplot_sel <- renderPrint({
@@ -210,7 +210,7 @@ server <- function(input, output) {
 	})
 	
 	delTab <- reactive({
-		delFeatFun(gff_wide(), samples(), genotypeFilterInputs())
+		del_feat_fun(gff_wide(), samples(), genotypeFilterInputs())
 	})
 	
 	output$filteredDels <- DT::renderDataTable({

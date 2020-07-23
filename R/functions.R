@@ -29,12 +29,12 @@ var_type_colours <- c(
 # Functions -------------------------------------------------------------------
 ## |Effect Annotation ---------------------------------------------------------
 
-#' effParser
+#' eff_parser
 #' parsing snpeff strings EFF field 
 #' see: http://snpeff.sourceforge.net/SnpEff_manual.html#eff
 #' @param df a dataframe with an EFF column containing and EFF string
 #' @return a dataframe with columns for 
-effParser <- function(df) {
+eff_parser <- function(df) {
 	tidyr::extract(
 		df, EFF,
 		into = c(
@@ -54,13 +54,13 @@ effParser <- function(df) {
 	)
 }
 
-#' effExtractor
+#' eff_extractor
 #' split multiple EFF strings into separate individual EFF strings
 #'  and convert each to a row in a table
 #' @param eff an EFF string or multiple comma separated EFF strings
 #' @return a tibble with an EFF column where each row is a single EFF string
-effExtractor <- function(eff) {
-	effParser(
+eff_extractor <- function(eff) {
+	eff_parser(
 		tibble::tibble(
 			EFF = strsplit(eff, ",")[[1]]
 		)
@@ -89,7 +89,7 @@ gen_var_eff_DT <- function(loci, row_clicked) {
 	df <- loci %>% 
 		dplyr::slice(row_clicked) %>%
 		dplyr::pull(EFF) %>%
-		effExtractor() %>%
+		eff_extractor() %>%
 		dplyr::select(-Amino_Acid_Length, -ERRORS, -WARNINGS, -Genotype_Number)
 	
 	DT::datatable(
@@ -108,7 +108,7 @@ gen_var_eff_DT <- function(loci, row_clicked) {
 }
 
 ## | Quality ------------------------------------------------------------------
-highDepth <- function(df) {
+high_depth <- function(df) {
 	df %>%
 		group_by(CHROM) %>%
 		mutate(
@@ -124,7 +124,7 @@ highDepth <- function(df) {
 # mapping quality
 
 ## | Multi genotype locus handeling -------------------------------------------
-splitGeno <- function(dfr) {
+split_geno <- function(dfr) {
 	spltcls <- dfr %>% 
 		as.list() %>% 
 		purrr::map(~{ # only split character vectors - keeps types consistent later
@@ -146,7 +146,7 @@ splitGeno <- function(dfr) {
 	spltcls %>% tibble::as_tibble()
 }
 
-lociByGenotype <- function(df) {
+loci_by_genotype <- function(df) {
 	nms <- colnames(df)
 	gts <- nms[grepl("gt_", nms)]
 	gts <- gts[gts != "gt_GT"]
@@ -163,7 +163,7 @@ lociByGenotype <- function(df) {
 		dplyr::filter(NUMALT > 1) %>%
 		dplyr::group_by(pos) %>%
 		dplyr::group_split() %>%
-		purrr::map_dfr(splitGeno) %>%
+		purrr::map_dfr(split_geno) %>%
 		#readr::type_convert() %>%
 		mutate(
 			POS = as.integer(POS),
@@ -176,7 +176,7 @@ lociByGenotype <- function(df) {
 }
 
 ## | Deletion filtering -------------------------------------------------------
-categoriseSample <- function(x, nm) {
+categorise_sample <- function(x, nm) {
 	nm <- gsub("sample_(.*)", "\\1", nm)
 	tb <- NULL
 	if (any(c("1/1", "0/1") %in% x)) {
@@ -187,10 +187,10 @@ categoriseSample <- function(x, nm) {
 	return(tb)
 }
 
-delFeatFun <- function(df, sampids, lst) {
+del_feat_fun <- function(df, sampids, lst) {
 	#lst <- input[paste0("sample_", sampids)]
 	if(all(sapply(lst, is.null))) { return(df) }
-	samples2keep <- purrr::map2_dfr(lst, names(lst), ~categoriseSample(.x, .y))
+	samples2keep <- purrr::map2_dfr(lst, names(lst), ~categorise_sample(.x, .y))
 	df <- df %>% filter(
 		dplyr::across(
 			dplyr::matches(
@@ -215,7 +215,7 @@ delFeatFun <- function(df, sampids, lst) {
 }
 
 ## | Plots --------------------------------------------------------------------
-lociPlot <- function(df) { ## var_type_colours !! global
+loci_plot <- function(df) { ## var_type_colours !! global
 	ggplot2::ggplot(df, ggplot2::aes(POS, AF)) + 
 		ggplot2::geom_point(ggplot2::aes(colour = TYPE, alpha = QUAL)) + 
 		#geom_point_interactive(aes(colour = TYPE, alpha = QUAL)) + 
@@ -233,8 +233,8 @@ lociPlot <- function(df) { ## var_type_colours !! global
 }
 
 
-# mutTypeFreqPlot
-mutTypeFreqPlot <- function(df) { ## var_type_colours !! global
+# mut_type_freq_plot
+mut_type_freq_plot <- function(df) { ## var_type_colours !! global
 	df %>%
 		dplyr::count(TYPE) %>% 
 		dplyr::mutate(
