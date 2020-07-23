@@ -176,6 +176,18 @@ loci_by_genotype <- function(df) {
 }
 
 ## | Deletion filtering -------------------------------------------------------
+import_deletions <- function(filenm) {
+	vroom::vroom(filenm, col_names = gtfnames, delim = "\t") %>%
+		as.data.frame() %>% 
+		tidyr::extract(
+			attributes,
+			into = c("sample","p_value"),
+			regex = "sample=(\\d+);p_value=(-?[\\d.]+(?:e-?\\d+)?)",
+			convert = TRUE
+		) %>%
+		dplyr::select(-source, -strand, -phase)
+}
+
 categorise_sample <- function(x, nm) {
 	nm <- gsub("sample_(.*)", "\\1", nm)
 	tb <- NULL

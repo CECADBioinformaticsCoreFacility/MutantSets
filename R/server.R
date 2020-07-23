@@ -184,15 +184,7 @@ server <- function(input, output) {
 	
 	gff <- reactive({
 		req(input$gff)
-		vroom::vroom(input$gff$datapath, col_names = gtfnames, delim = "\t") %>%
-			as.data.frame() %>% 
-			tidyr::extract(
-				attributes,
-				into = c("sample","p_value"),
-				regex = "sample=(\\d+);p_value=(-?[\\d.]+(?:e-?\\d+)?)",
-				convert = TRUE
-			) %>%
-			dplyr::select(-source, -strand, -phase)
+		import_deletions(input$gff$datapath)
 	})
 	
 	gff_wide <- reactive({
