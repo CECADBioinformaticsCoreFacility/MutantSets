@@ -23,14 +23,7 @@ server <- function(input, output) {
 	# Genotype filtering ----------------------------------------------------------
 	## set sample names
 	output$renameUI <- renderUI({
-		renamers <- lapply(samples(), function(sampid) {
-			textInput(
-				inputId = paste0("alias_", sampid),
-				label = "Sample Name",
-				placeholder = sampid
-			)
-		})
-		tagList(renamers)
+		alias_samples(samples())
 	})
 	
 	# Genotype filters UI

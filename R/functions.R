@@ -85,6 +85,22 @@ gtformfun <- function(dt, id) {
 		)
 }
 
+## | Quality ------------------------------------------------------------------
+highDepth <- function(df) {
+	df %>%
+		group_by(CHROM) %>%
+		mutate(
+			meanDepth = mean(DP),
+			if_else(
+				(mean(DP)*3) > DP, paste0(FILTER, "highDepth"), FILTER
+			)
+		) %>%
+		ungroup()
+}
+
+# strand biases?
+# mapping quality
+
 ## | Multi genotype locus handeling -------------------------------------------
 splitGeno <- function(dfr) {
 	spltcls <- dfr %>% 
@@ -218,4 +234,16 @@ mutTypeFreqPlot <- function(df) { ## var_type_colours !! global
 				ggplot2::labs(x = "Type", y = "Number of Mutations")
 		} %>%
 		plotly::ggplotly(tooltip = "text")
+}
+
+## | UI generators ------------------------------------------------------------
+alias_samples <- function(samples) {
+	renamers <- lapply(samples, function(sampid) {
+		textInput(
+			inputId = paste0("alias_", sampid),
+			label = "Sample Name",
+			placeholder = sampid
+		)
+	})
+	tagList(renamers)
 }
