@@ -165,28 +165,10 @@ server <- function(input, output) {
 			dplyr::select(-Amino_Acid_Length, -ERRORS, -WARNINGS, -Genotype_Number)
 		
 	})
-	## eff --------------------------------
+	## Variant effect annotation --------------------------------
 	output$effect <- DT::renderDataTable({
 		req(input$filtVarsDT_row_last_clicked)
-		df <- loci() %>% 
-			dplyr::slice(input$filtVarsDT_row_last_clicked) %>%
-			dplyr::pull(EFF) %>%
-			effExtractor() %>%
-			dplyr::select(-Amino_Acid_Length, -ERRORS, -WARNINGS, -Genotype_Number)
-		
-		DT::datatable(
-			df, rownames = FALSE, options = list(scrollX = TRUE),
-		) %>%
-			DT::formatStyle(
-				"Effect", "Effect_Impact", 
-				backgroundColor = DT::styleEqual(
-					toupper(c("High", "Moderate", "Low", "Modifier")),
-					c("#CD3333", "#FF7F00", "#458B00", "#969696")
-				),
-				backgroundSize = '98% 88%',
-				backgroundRepeat = 'no-repeat',
-				backgroundPosition = 'center'
-			)
+		gen_var_eff_DT(loci(), input$filtVarsDT_row_last_clicked)
 	})
 	
 	gtformatter <- reactive({

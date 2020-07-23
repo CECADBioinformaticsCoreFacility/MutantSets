@@ -85,6 +85,28 @@ gtformfun <- function(dt, id) {
 		)
 }
 
+gen_var_eff_DT <- function(loci, row_clicked) {
+	df <- loci %>% 
+		dplyr::slice(row_clicked) %>%
+		dplyr::pull(EFF) %>%
+		effExtractor() %>%
+		dplyr::select(-Amino_Acid_Length, -ERRORS, -WARNINGS, -Genotype_Number)
+	
+	DT::datatable(
+		df, rownames = FALSE, options = list(scrollX = TRUE),
+	) %>%
+		DT::formatStyle(
+			"Effect", "Effect_Impact", 
+			backgroundColor = DT::styleEqual(
+				toupper(c("High", "Moderate", "Low", "Modifier")),
+				c("#CD3333", "#FF7F00", "#458B00", "#969696")
+			),
+			backgroundSize = '98% 88%',
+			backgroundRepeat = 'no-repeat',
+			backgroundPosition = 'center'
+		)
+}
+
 ## | Quality ------------------------------------------------------------------
 highDepth <- function(df) {
 	df %>%
