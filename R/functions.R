@@ -320,3 +320,76 @@ variant_column_selector <- function(meta){
 		multiple = TRUE
 	)
 }
+
+## | Main Variant Table ----------------------------
+
+gtformatter <- function(dt, samples) {
+	Reduce(gtformfun, samples, init = dt)
+}
+
+gen_var_tab <- function(loci, samples) {
+	# don't display the long EFF column or the unique position identifier
+	df <- loci %>% dplyr::select(-EFF, -pos)
+	
+	# colour scale for allele frequency column
+	brks <- quantile(df$AF, probs = seq(.05, .95, .05), na.rm = TRUE)
+	clrs <- scales::colour_ramp(
+		#c("#ffeda0", "#feb24c", "#f03b20")
+		c("#efedf5", "#bcbddc", "#756bb1")
+	)(c(0, brks))
+	
+	dt <- df %>% 
+		DT::datatable(
+			rownames = FALSE,
+			selection = "single",
+			options = list(
+				#autoWidth = TRUE,
+				scrollX = TRUE,
+				columnDefs = list(
+					list(
+						render = htmlwidgets::JS(
+							"function(data, type, row, meta) {",
+							"return type === 'display' && data.length > 10 ?",
+							"'<span title=\"' + data + '\">' + data.substr(0, 10) + '...</span>' : data;",
+							"}"),
+						targets = list(2, 3)
+					)
+				)#"_all"
+			)
+		) %>%
+		## barplots ~ reactive to column selection ~ errors when deselecting default columns
+		DT::formatStyle(
+			'DP','DP',
+			background = DT::styleColorBar(
+				df[["DP"]],
+				'lightblue'
+			),
+			backgroundSize = '98% 88%',
+			backgroundRepeat = 'no-repeat',
+			backgroundPosition = 'center'
+		) %>%
+		DT::formatStyle(
+			'QUAL','QUAL',
+			background = DT::styleColorBar(
+				df[["QUAL"]],
+				'lightblue'
+			),
+			backgroundSize = '98% 88%',
+			backgroundRepeat = 'no-repeat',
+			backgroundPosition = 'center'
+		) %>% DT::formatStyle(
+			"TYPE", "TYPE",
+			backgroundColor = DT::styleEqual(
+				names(var_type_colours), var_type_colours
+			)
+		) %>% 
+		DT::formatStyle(
+			"AF", "AF",
+			backgroundColor = DT::styleInterval(
+				brks, clrs
+			)
+		) %>%
+		gtformatter(samples)
+	
+	return(dt)
+}

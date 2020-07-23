@@ -171,77 +171,13 @@ server <- function(input, output) {
 		gen_var_eff_DT(loci(), input$filtVarsDT_row_last_clicked)
 	})
 	
-	gtformatter <- reactive({
-		function(dt) {
-			Reduce(gtformfun, samples(), init = dt)
-		}
-	})
 	## vars tab -------------------------
 	output$col_picker <- renderUI({
 		variant_column_selector(vcftidy()$meta)
 	})
 	
 	output$filtVarsDT <- DT::renderDataTable({
-		#df <- filtVars() 
-		df <- loci() %>% dplyr::select(-EFF, -pos)
-		brks <- quantile(df$AF, probs = seq(.05, .95, .05), na.rm = TRUE)
-		clrs <- scales::colour_ramp(
-			#c("#ffeda0", "#feb24c", "#f03b20")
-			c("#efedf5", "#bcbddc", "#756bb1")
-		)(c(0, brks))
-		
-		clrs <- df %>% 
-			DT::datatable(
-				rownames = FALSE,
-				selection = "single",
-				options = list(
-					#autoWidth = TRUE,
-					#scrollX=TRUE,
-					columnDefs = list(
-						list(
-							render = htmlwidgets::JS(
-								"function(data, type, row, meta) {",
-								"return type === 'display' && data.length > 10 ?",
-								"'<span title=\"' + data + '\">' + data.substr(0, 10) + '...</span>' : data;",
-								"}"),
-							targets = list(2, 3)
-						)
-					)#"_all"
-				)
-			) %>%
-			## barplots
-			DT::formatStyle(
-				'DP','DP',
-				background = DT::styleColorBar(
-					df[["DP"]],
-					'lightblue'
-				),
-				backgroundSize = '98% 88%',
-				backgroundRepeat = 'no-repeat',
-				backgroundPosition = 'center'
-			) %>%
-			DT::formatStyle(
-				'QUAL','QUAL',
-				background = DT::styleColorBar(
-					df[["QUAL"]],
-					'lightblue'
-				),
-				backgroundSize = '98% 88%',
-				backgroundRepeat = 'no-repeat',
-				backgroundPosition = 'center'
-			) %>% DT::formatStyle(
-				"TYPE", "TYPE",
-				backgroundColor = DT::styleEqual(
-					names(var_type_colours), var_type_colours
-				)
-			) %>% 
-			DT::formatStyle(
-				"AF", "AF",
-				backgroundColor = DT::styleInterval(
-					brks, clrs
-				)
-			) %>%
-			gtformatter()()
+		gen_var_tab(loci(), samples())
 	}, server = TRUE)
 	
 	# Deletions ---------------------------------------------------------------
