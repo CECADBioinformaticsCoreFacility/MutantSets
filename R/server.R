@@ -178,32 +178,7 @@ server <- function(input, output) {
 	})
 	## vars tab -------------------------
 	output$col_picker <- renderUI({
-		opts <- vcftidy()$meta %>%
-			dplyr::filter(!grepl("gt_", ID)) %>%
-			dplyr::filter(ID != "EFF")
-		optlabeled <- opts$ID
-		names(optlabeled) <- paste0("(", opts$ID, ") ", opts$Description)
-		shinyWidgets::pickerInput(
-			inputId = "pick_cols", 
-			label = "Select/deselect all Columns", 
-			choices = optlabeled, 
-			selected = c(
-				"CHROM", "POS", "REF", "ALT", "QUAL", "DP", "QR", "ODDS",
-				"TYPE", "NUMALT", "EFF", "AF"
-			),
-			options = shinyWidgets::pickerOptions(
-				actionsBox = TRUE,
-				selectedTextFormat = "count > 3",
-				liveSearch = TRUE,
-				size = 10
-			),
-			# options = list(
-			# 	`actions-box` = TRUE, 
-			# 	size = 10,
-			# 	`selected-text-format` = "count > 3"
-			# ), 
-			multiple = TRUE
-		)
+		variant_column_selector(vcftidy()$meta)
 	})
 	
 	output$filtVarsDT <- DT::renderDataTable({
