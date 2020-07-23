@@ -59,7 +59,6 @@ server <- function(input, output) {
 				all_of(samples())
 			)
 	})
-	#
 	
 	output$total_vb <- renderValueBox({
 		req(input$vcf)
@@ -121,7 +120,7 @@ server <- function(input, output) {
 		}
 	)
 	
-	## Chr plot ----------------------------------------
+	## Allele Frequency plot --------------------------------------------------
 	#output$testpoints <- renderPrint(print(input$chrplotclick))
 	#output$chrplot <- renderPlot({
 	output$chrplot <- plotly::renderPlotly({
