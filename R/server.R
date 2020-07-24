@@ -3,7 +3,8 @@ server <- function(input, output) {
 	# Options -----------------------------------------------------------------
 	options(shiny.maxRequestSize = Inf) # Do not limit file size
 	# Input pre-processing ----------------------------------------------------
-	vcf <- reactive({ # Parse VCF
+	## | Parse VCF
+	vcf <- reactive({ 
 		req(input$vcf)
 		vcfin <- vcfR::read.vcfR(input$vcf$datapath, verbose = FALSE)
 	})
@@ -11,6 +12,8 @@ server <- function(input, output) {
 	vcftidy <- reactive({ # VCF to tidy dataframe
 		vcfR::vcfR2tidy(vcf(), single_frame = TRUE)
 	})
+	
+	## | Get Basic Data properties --------------------------------------------
 	
 	samples <- reactive({
 		vcftidy()$dat %>% dplyr::distinct(Indiv) %>% dplyr::pull()
@@ -20,30 +23,18 @@ server <- function(input, output) {
 		lapply(samples(), function(x){ input[[paste0("sample_", x)]] })
 	})
 	
+	aliases <- reactive({
+		req(sample_vars_tolisten())
+		purrr::map_chr(samples(), ~input[[paste0("alias_", .x)]])
+	})
+	
 	chrs <- reactive({
 		req(input$vcf)
 		unique(vcftidy()$dat$CHROM)
 	})
-	# Genotype filtering ------------------------------------------------------
-	## set sample names
-	output$renameUI <- renderUI({
-		req(sample_vars_tolisten())
-		alias_samples(samples())
-	})
 	
-	# Genotype filters UI
-	output$setSelector <- renderUI({
-		genotype_selector(samples(), input)
-	})
-	
-	# multiVarLoci <- reactive({
-	# 	vcftidy()$dat %>%
-	# 		filter(NUMALT > 1)
-	# 		group_by(pos) %>%
-	# 		group_split() %>%
-	# 		map_dfr(split_geno)
-	# })
-	
+	# Transform Genotype Data -------------------------------------------------
+
 	allLoci <- reactive({
 		loci_by_genotype(vcftidy()$dat)
 	})
@@ -60,27 +51,8 @@ server <- function(input, output) {
 			)
 	})
 	
-	output$total_vb <- renderValueBox({
-		req(input$vcf)
-		valueBox(
-			#width = 8,
-			format(nrow(allLoci()), big.mark = ","),
-			"Total Variants", icon = icon("dna"),
-			color = "purple"
-		)
-	})
 	
-	output$nfiltered_vb <- renderValueBox({
-		req(input$vcf)
-		valueBox(
-			#width = 8,
-			format(nrow(loci()), big.mark = ","),
-			"Filtered Variants", icon = icon("dna")
-		)
-	})
-	
-
-	filtfun <- eventReactive(sample_vars_tolisten(),{
+	filtfun <- eventReactive(sample_vars_tolisten(), {
 		function(dff, sampids) {
 			for (i in seq_along(sampids)) {
 				inval <- input[[paste0("sample_", sampids[i])]]
@@ -93,6 +65,7 @@ server <- function(input, output) {
 	})
 	
 	loci <- reactive({
+		req(input$QUAL_filter)
 		# Assuming 1 variant per position need to have handling of multiple vars in one place!!!!!
 		# if(is.null(chrplot_click()) | length(chrplot_click()) == 0) {
 		# 	df <- locusGenoTypes() %>%
@@ -103,7 +76,8 @@ server <- function(input, output) {
 		# }
 		
 		df <- locusGenoTypes() %>%
-			filtfun()(samples())
+			filtfun()(samples()) %>%
+			quality_filters(input)
 		
 		# if(!is.null(input$chrplotclick)) {
 		# 	df <- nearPoints(df, input$chrplotclick, "POS", "AF")
@@ -112,7 +86,26 @@ server <- function(input, output) {
 		#dplyr::pull(pos)
 	})
 	
-	# |Download data ----------------------------------------------------------
+	# Genotype filtering ------------------------------------------------------
+	## | Set sample names -----------------------------------------------------
+	output$renameUI <- renderUI({
+		req(sample_vars_tolisten())
+		alias_samples(samples())
+	})
+	
+	## | Genotype filters UI --------------------------------------------------
+	output$setSelector <- renderUI({
+		genotype_selector(samples(), input)
+	})
+	outputOptions(output, "setSelector", suspendWhenHidden = FALSE)
+	
+	## | Quality filters UI ---------------------------------------------------
+	output$quality_sliders <- renderUI({
+		quality_sliders(allLoci())
+	})
+	outputOptions(output, "quality_sliders", suspendWhenHidden = FALSE)
+	
+	# | Download data ----------------------------------------------------------
 	output$downloadData <- downloadHandler(
 		filename = "selected_mutants.tsv",
 		content = function(file) {
@@ -120,7 +113,27 @@ server <- function(input, output) {
 		}
 	)
 	
-	## Allele Frequency plot --------------------------------------------------
+	# Visual Outputs ----------------------------------------------------------
+	## | Counts ---------------------------------------------------------------
+	output$total_vb <- renderValueBox({
+		req(input$vcf)
+		valueBox(
+			format(nrow(allLoci()), big.mark = ","),
+			"Total Variants", icon = icon("dna"),
+			color = "purple"
+		)
+	})
+	
+	output$nfiltered_vb <- renderValueBox({
+		req(input$vcf)
+		valueBox(
+			format(nrow(loci()), big.mark = ","),
+			"Filtered Variants", icon = icon("dna")
+		)
+	})
+	
+	
+	## | Allele Frequency plot ------------------------------------------------
 	#output$testpoints <- renderPrint(print(input$chrplotclick))
 	#output$chrplot <- renderPlot({
 	output$chrplot <- plotly::renderPlotly({
@@ -132,9 +145,6 @@ server <- function(input, output) {
 		#girafe(code = print(plot))
 	})
 	
-	output$mutTypeFreqPlot <- renderPlotly({
-		mut_type_freq_plot(loci())
-	})
 	
 	# output$chrplot_sel <- renderPrint({
 	# 	event_data("plotly_selected")
@@ -148,25 +158,32 @@ server <- function(input, output) {
 	# 	event_data("plotly_click")
 	# })
 	
-	observeEvent(input$reset, {
-		js$resetClick()
-	})
+	# observeEvent(input$reset, {
+	# 	js$resetClick()
+	# })
 	
 	#output$chrplot_click <- renderText(names(chrplot_click()))
 	
-	## Variant effect annotation --------------------------------
+	## | Mutation type plot ---------------------------------------------------
+	
+	output$mutTypeFreqPlot <- renderPlotly({
+		mut_type_freq_plot(loci())
+	})
+	
+	## | Variant effect annotation --------------------------------------------
 	output$effect <- DT::renderDataTable({
 		req(input$filtVarsDT_row_last_clicked)
 		gen_var_eff_DT(loci(), input$filtVarsDT_row_last_clicked)
 	})
 	
-	## main variants tab -------------------------
+	## | __Main Variants Table__ ----------------------------------------------
+	
 	output$col_picker <- renderUI({
 		variant_column_selector(vcftidy()$meta)
 	})
 	
 	output$filtVarsDT <- DT::renderDataTable({
-		gen_var_tab(loci(), samples())
+		gen_var_tab(loci(), samples(), aliases())
 	}, server = TRUE)
 	
 	# Deletions ---------------------------------------------------------------
@@ -197,11 +214,4 @@ server <- function(input, output) {
 	output$filteredDels <- DT::renderDataTable({
 		delTab() %>% DT::datatable(rownames = FALSE)
 	})
-	
-	# output$qualplot <- renderPlot({
-	# 	qualityscores() %>%
-	# 		ggplot(aes(CHROM, scores)) +
-	# 		lvplot::geom_lv(aes(fill = CHROM)) +
-	# 		facet_wrap(~metric, scales = "free", ncol = 1)
-	# })
 }

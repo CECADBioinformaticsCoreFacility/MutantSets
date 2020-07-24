@@ -108,16 +108,71 @@ gen_var_eff_DT <- function(loci, row_clicked) {
 }
 
 ## | Quality ------------------------------------------------------------------
-high_depth <- function(df) {
-	df %>%
-		group_by(CHROM) %>%
-		mutate(
-			meanDepth = mean(DP),
-			if_else(
-				(mean(DP)*3) > DP, paste0(FILTER, "highDepth"), FILTER
-			)
-		) %>%
-		ungroup()
+# high_depth <- function(df) {
+# 	df %>%
+# 		group_by(CHROM) %>%
+# 		mutate(
+# 			meanDepth = mean(DP),
+# 			if_else(
+# 				(mean(DP)*3) > DP, paste0(FILTER, "highDepth"), FILTER
+# 			)
+# 		) %>%
+# 		ungroup()
+# }
+
+DP_slider <- function(allloci) {
+	rng <- range(allloci$DP, na.rm = TRUE)
+	sliderInput(
+		"DP_filter", "Depth (DP)",
+		min = rng[1], max = rng[2],
+		value = c(rng[1], mean(allloci$DP) * 3),
+		step = 1
+	)
+}
+
+QUAL_slider <- function(allloci) {
+	rng <- range(allloci$QUAL, na.rm = TRUE)
+	sliderInput(
+		"QUAL_filter", "Variant Quality (QUAL)",
+		min = rng[1], max = rng[2],
+		value = 20, step = 1
+	)
+}
+
+QR_slider <- function(allloci) {
+	rng <- range(allloci$QR, na.rm = TRUE)
+	sliderInput(
+		"QR_filter", "Reference Allele Quality (QR)",
+		min = rng[1], max = rng[2],
+		value = 20, step = 1
+	)
+}
+
+QA_slider <- function(allloci) {
+	rng <- range(allloci$QA, na.rm = TRUE)
+	sliderInput(
+		"QA_filter", "Alternate Allele Quality (QA)",
+		min = rng[1], max = rng[2],
+		value = 20, step = 1
+	)
+}
+
+quality_sliders <- function(allloci) {
+	tagList(
+		DP_slider(allloci),
+		QUAL_slider(allloci),
+		QR_slider(allloci),
+		QA_slider(allloci)
+	)
+}
+
+quality_filters <- function(df, input) {
+	df %>% dplyr::filter(
+		DP >= input$DP_filter[1], DP <= input$DP_filter[2],
+		QUAL >= input$QUAL_filter,
+		QR >= input$QR_filter,
+		QA >= input$QA_filter,
+	)
 }
 
 # strand biases?
@@ -152,7 +207,7 @@ loci_by_genotype <- function(df) {
 	gts <- gts[gts != "gt_GT"]
 	
 	vcftidy_wide <- df %>%
-		#mutate(POS = as.integer(POS)) %>%
+		mutate(QA = as.integer(QA)) %>%
 		tidyr::unite(pos, CHROM, POS, sep = "_", remove = FALSE) %>%
 		dplyr::select(-all_of(gts)) %>%
 		tidyr::pivot_wider(
@@ -167,6 +222,7 @@ loci_by_genotype <- function(df) {
 		#readr::type_convert() %>%
 		mutate(
 			POS = as.integer(POS),
+			QA = as.integer(QA),
 			QUAL = as.double(QUAL),
 			AC = as.character(AC)
 		) %>%
@@ -282,7 +338,6 @@ alias_samples <- function(samples) {
 	tagList(renamers)
 }
 
-
 genotype_selector <- function(samples, input) {
 	selector <- lapply(samples, function(sampid) {
 		label <- paste0("Genotypes to Include for ", sampid)
@@ -320,7 +375,7 @@ variant_column_selector <- function(meta){
 		label = "Select/deselect all Columns", 
 		choices = optlabeled, 
 		selected = c( # factor out as default col variable?
-			"CHROM", "POS", "REF", "ALT", "QUAL", "DP", "QR", "ODDS",
+			"CHROM", "POS", "REF", "ALT", "QUAL", "DP", "QR", "QA", "ODDS",
 			"TYPE", "NUMALT", "EFF", "AF"
 		),
 		options = shinyWidgets::pickerOptions(
@@ -339,7 +394,7 @@ gtformatter <- function(dt, samples) {
 	Reduce(gtformfun, samples, init = dt)
 }
 
-gen_var_tab <- function(loci, samples) {
+gen_var_tab <- function(loci, samples, aliases) {
 	# don't display the long EFF column or the unique position identifier
 	df <- loci %>% dplyr::select(-EFF, -pos)
 	
@@ -350,10 +405,16 @@ gen_var_tab <- function(loci, samples) {
 		c("#efedf5", "#bcbddc", "#756bb1")
 	)(c(0, brks))
 	
+	
+	aliases[aliases == ""] <- samples[aliases == ""]
+	cnms <- colnames(df)
+	cnms[cnms %in% samples] <- aliases
+	
 	dt <- df %>% 
 		DT::datatable(
 			rownames = FALSE,
 			selection = "single",
+			colnames = cnms,
 			options = list(
 				#autoWidth = TRUE,
 				scrollX = TRUE,
@@ -405,3 +466,8 @@ gen_var_tab <- function(loci, samples) {
 	
 	return(dt)
 }
+
+
+# ,
+# sliderInput("QR", "Reference Quality"),
+# sliderInput("QA", "Alternative Quality")
