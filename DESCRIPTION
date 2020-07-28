@@ -32,3 +32,6 @@ Imports:
     scales,
     tibble,
     V8
+Suggests: 
+    testthat,
+    covr
