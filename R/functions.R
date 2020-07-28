@@ -323,7 +323,16 @@ mut_type_freq_plot <- function(df) { ## var_type_colours !! global
 				ggplot2::theme(legend.position = "bottom") + 
 				ggplot2::labs(x = "Type", y = "Number of Mutations")
 		} %>%
-		plotly::ggplotly(tooltip = "text")
+		plotly::ggplotly(tooltip = "text") %>%
+		config(
+			displaylogo = FALSE,
+			modeBarButtonsToRemove = list(
+				"autoScale2d", "resetScale2d",
+				"hoverClosestCartesian", "hoverCompareCartesian",
+				"select2d", "lasso2d", "zoomIn2d", "zoomOut2d",
+				"toggleSpikelines"
+			)
+		)
 }
 
 ## | UI generators ------------------------------------------------------------
