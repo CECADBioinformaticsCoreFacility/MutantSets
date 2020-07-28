@@ -341,11 +341,14 @@ alias_samples <- function(samples) {
 genotype_selector <- function(samples, input) {
 	selector <- lapply(samples, function(sampid) {
 		label <- paste0("Genotypes to Include for ", sampid)
-		if(input[[paste0("alias_", sampid)]] != "") {
-			label <- paste0(
-				"Genotypes to Include for ", sampid,
-				" (", input[[paste0("alias_", sampid)]], ")"
-			)
+		alias <- input[[paste0("alias_", sampid)]]
+		if(!is.null(alias)) {
+			if(alias != "") {
+				label <- paste0(
+					"Genotypes to Include for ", sampid,
+					" (", alias, ")"
+				)
+			}
 		}
 		shinyWidgets::checkboxGroupButtons(
 			inputId = paste0("sample_", sampid),
