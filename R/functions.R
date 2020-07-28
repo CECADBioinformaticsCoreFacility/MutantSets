@@ -207,7 +207,6 @@ loci_by_genotype <- function(df) {
 	gts <- gts[gts != "gt_GT"]
 	
 	vcftidy_wide <- df %>%
-		mutate(QA = as.integer(QA)) %>%
 		tidyr::unite(pos, CHROM, POS, sep = "_", remove = FALSE) %>%
 		dplyr::select(-all_of(gts)) %>%
 		tidyr::pivot_wider(
@@ -222,12 +221,15 @@ loci_by_genotype <- function(df) {
 		#readr::type_convert() %>%
 		mutate(
 			POS = as.integer(POS),
-			QA = as.integer(QA),
 			QUAL = as.double(QUAL),
 			AC = as.character(AC)
 		) %>%
 		dplyr::bind_rows(vcftidy_wide %>% dplyr::filter(NUMALT <= 1)) %>%
-		dplyr::mutate(AF = as.numeric(AF)) %>%
+		dplyr::mutate(
+			AF = as.numeric(AF),
+			QR = as.integer(QR),
+			QA = as.integer(QA),
+		) %>%
 		dplyr::arrange(desc(AF), desc(QUAL), CHROM, POS)
 }
 
