@@ -107,6 +107,22 @@ gen_var_eff_DT <- function(loci, row_clicked) {
 		)
 }
 
+wormbase_view <- function(chr, vstart, vend, hstart = NULL, hend = NULL) {
+	# NB chr form: "III"	
+	url <- paste0("https://wormbase.org/tools/genome/jbrowse-simple/",
+		"?data=data%2Fc_elegans_PRJNA13758&",
+		"loc=", chr, "%3A", vstart, "..", vend,
+		"&tracks=Curated_Genes%2CClassical_alleles" #"%2CYACs_Fosmids_Cosmids"
+	)
+	
+	if(!is.null(hstart)) {
+		url <- paste0(url,"&highlight=", chr, "%3A", hstart, "..", hend)
+	}
+	
+	paste0("<embed width = '100%' height = '500px' src='", url, "'>")
+}
+
+
 ## | Quality ------------------------------------------------------------------
 # high_depth <- function(df) {
 # 	df %>%

@@ -89,6 +89,10 @@ body <- shinydashboard::dashboardBody(
 						DT::DTOutput("effect")
 					),
 					tabPanel(
+						"Genome Browser",
+						htmlOutput("genomeBrowser")
+					),
+					tabPanel(
 						"Sets"
 					),
 					tabPanel(

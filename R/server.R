@@ -195,6 +195,22 @@ server <- function(input, output) {
 		gen_var_eff_DT(loci(), input$filtVarsDT_row_last_clicked)
 	})
 	
+	output$genomeBrowser <- renderText({
+		#req(input$filtVarsDT_row_last_clicked)
+		if(is.null(input$filtVarsDT_row_last_clicked)) {
+			return("Please select a variant to view...")
+		}
+		row <- loci() %>% dplyr::slice(input$filtVarsDT_row_last_clicked)
+		wormbase_view(
+			gsub("chr", "", row$CHROM),
+			row$POS - 1000,
+			row$POS + 1000,
+			row$POS - 1,
+			row$POS
+		)
+		
+	})
+	
 	## | __Main Variants Table__ ----------------------------------------------
 	
 	output$col_picker <- renderUI({
