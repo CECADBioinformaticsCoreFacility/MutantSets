@@ -207,7 +207,6 @@ loci_by_genotype <- function(df) {
 	gts <- gts[gts != "gt_GT"]
 	
 	vcftidy_wide <- df %>%
-		mutate(QA = as.integer(QA)) %>%
 		tidyr::unite(pos, CHROM, POS, sep = "_", remove = FALSE) %>%
 		dplyr::select(-all_of(gts)) %>%
 		tidyr::pivot_wider(
@@ -222,13 +221,41 @@ loci_by_genotype <- function(df) {
 		#readr::type_convert() %>%
 		mutate(
 			POS = as.integer(POS),
-			QA = as.integer(QA),
 			QUAL = as.double(QUAL),
 			AC = as.character(AC)
 		) %>%
 		dplyr::bind_rows(vcftidy_wide %>% dplyr::filter(NUMALT <= 1)) %>%
-		dplyr::mutate(AF = as.numeric(AF)) %>%
+		dplyr::mutate(
+			AF = as.numeric(AF),
+			QR = as.integer(QR),
+			QA = as.integer(QA),
+		) %>%
 		dplyr::arrange(desc(AF), desc(QUAL), CHROM, POS)
+}
+
+
+get_genotype_class <- function(sig) {
+	if( (length(sig) != 1) | (!is.character(sig)) ) {
+		stop("sig must be a character vector of length 1")
+	}
+	if(is.na(sig)) {
+		return(as.character(NA))
+	}
+	
+	splitg <- strsplit(sig,"/")[[1]]
+	if(splitg[1] == splitg[2]) {
+		if(splitg[1] == "0") {
+			return("HomoRef")
+		} else {
+			return("HomoAlt")
+		}
+	} else {
+		if(splitg[1] != "0") {
+			return("HeteroAlt")
+		} else {
+			return("HeteroRef")
+		}
+	}
 }
 
 ## | Deletion filtering -------------------------------------------------------
@@ -332,7 +359,7 @@ mut_type_freq_plot <- function(df) { ## var_type_colours !! global
 				ggplot2::labs(x = "Type", y = "Number of Mutations")
 		} %>%
 		plotly::ggplotly(tooltip = "text") %>%
-		config(
+		plotly::config(
 			displaylogo = FALSE,
 			modeBarButtonsToRemove = list(
 				"autoScale2d", "resetScale2d",
