@@ -231,6 +231,31 @@ loci_by_genotype <- function(df) {
 		dplyr::arrange(desc(AF), desc(QUAL), CHROM, POS)
 }
 
+
+get_genotype_class <- function(sig) {
+	if( (length(sig) != 1) | (!is.character(sig)) ) {
+		stop("sig must be a character vector of length 1")
+	}
+	if(is.na(sig)) {
+		return(as.character(NA))
+	}
+	
+	splitg <- strsplit(sig,"/")[[1]]
+	if(splitg[1] == splitg[2]) {
+		if(splitg[1] == "0") {
+			return("HomoRef")
+		} else {
+			return("HomoAlt")
+		}
+	} else {
+		if(splitg[1] != "0") {
+			return("HeteroAlt")
+		} else {
+			return("HeteroRef")
+		}
+	}
+}
+
 ## | Deletion filtering -------------------------------------------------------
 import_deletions <- function(filenm) {
 	vroom::vroom(filenm, col_names = gtfnames, delim = "\t") %>%

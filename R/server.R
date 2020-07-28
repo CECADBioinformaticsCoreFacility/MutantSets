@@ -54,13 +54,15 @@ server <- function(input, output) {
 			)
 	})
 	
-	
 	filtfun <- eventReactive(sample_vars_tolisten(), {
 		function(dff, sampids) {
 			for (i in seq_along(sampids)) {
 				inval <- input[[paste0("sample_", sampids[i])]]
 				if(!is.null(inval)) {
-					dff <- dff[dff[[sampids[i]]] %in% inval,]
+					dff <- dff[
+						unlist(sapply(dff[[sampids[i]]], get_genotype_class)) %in% 
+						unlist(sapply(inval, get_genotype_class)),
+					]
 				}
 			}
 			dff
