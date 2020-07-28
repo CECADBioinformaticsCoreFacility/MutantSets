@@ -170,7 +170,7 @@ server <- function(input, output) {
 	
 	## | Mutation type plot ---------------------------------------------------
 	
-	output$mutTypeFreqPlot <- renderPlotly({
+	output$mutTypeFreqPlot <- plotly::renderPlotly({
 		mut_type_freq_plot(loci())
 	})
 	
