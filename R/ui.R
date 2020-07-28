@@ -48,6 +48,7 @@ body <- dashboardBody(
 					tabPanel(
 						title = "Genotype Filters", status = "primary",
 						solidHeader = TRUE, collapsible = TRUE,
+						uiOutput("chr_selection"),
 						uiOutput("setSelector")
 					),
 					tabPanel(

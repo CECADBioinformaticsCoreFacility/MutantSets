@@ -33,6 +33,9 @@ server <- function(input, output) {
 		unique(vcftidy()$dat$CHROM)
 	})
 	
+	output$chr_selection <- renderUI({ chr_selectizer(chrs()) })
+	outputOptions(output, "chr_selection", suspendWhenHidden = FALSE)
+	
 	# Transform Genotype Data -------------------------------------------------
 
 	allLoci <- reactive({
@@ -65,7 +68,7 @@ server <- function(input, output) {
 	})
 	
 	loci <- reactive({
-		req(input$QUAL_filter)
+		req(input$QUAL_filter, input$picked_chr)
 		# Assuming 1 variant per position need to have handling of multiple vars in one place!!!!!
 		# if(is.null(chrplot_click()) | length(chrplot_click()) == 0) {
 		# 	df <- locusGenoTypes() %>%
@@ -77,7 +80,8 @@ server <- function(input, output) {
 		
 		df <- locusGenoTypes() %>%
 			filtfun()(samples()) %>%
-			quality_filters(input)
+			quality_filters(input) %>%
+			dplyr::filter(CHROM %in% input$picked_chr)
 		
 		# if(!is.null(input$chrplotclick)) {
 		# 	df <- nearPoints(df, input$chrplotclick, "POS", "AF")
