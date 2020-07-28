@@ -359,7 +359,7 @@ mut_type_freq_plot <- function(df) { ## var_type_colours !! global
 				ggplot2::labs(x = "Type", y = "Number of Mutations")
 		} %>%
 		plotly::ggplotly(tooltip = "text") %>%
-		config(
+		plotly::config(
 			displaylogo = FALSE,
 			modeBarButtonsToRemove = list(
 				"autoScale2d", "resetScale2d",
