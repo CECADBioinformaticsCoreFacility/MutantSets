@@ -2,23 +2,27 @@
 ## |Sidebar -------------------------------------------------------------------
 
 # Define UI for application that draws a histogram
-sidebar <- dashboardSidebar(
-	sidebarMenu(
+sidebar <- shinydashboard::dashboardSidebar(
+	shinydashboard::sidebarMenu(
 		#menuItem("Inputs", tabName = "inputs", icon = icon("upload")),
 		fileInput("vcf", "Select a VCF file", accept = ".vcf"),
 		fileInput("gff", "Select a gff file", accept = ".gff"),
 		#menuItem("Options", tabName = "options", icon = icon("th")),
-		menuItem("Filtering", tabName = "table", icon = icon("table")),
-		menuItem("Overview", tabName = "overview", icon = icon("th"))#,
+		shinydashboard::menuItem(
+			"Filtering", tabName = "table", icon = icon("table")
+		),
+		shinydashboard::menuItem(
+			"Overview", tabName = "overview", icon = icon("th")
+		)#,
 		#uiOutput("DPslider"),
 		#uiOutput("MQslider"),
 		#uiOutput("min_QUAL")
 	)
 )
 ## |Body ----------------------------------------------------------------------
-body <- dashboardBody(
+body <- shinydashboard::dashboardBody(
 	shinybusy::add_busy_spinner(spin = "fading-circle"),
-	tabItems(
+	shinydashboard::tabItems(
 		### ||Options ---------------------------------------------------------
 		# tabItem(
 		# 	tabName = "options",
@@ -30,7 +34,7 @@ body <- dashboardBody(
 		# 	)
 		# ),
 		### ||Table - ---------------------------------------------------------
-		tabItem(
+		shinydashboard::tabItem(
 			tabName = "table",
 			fluidRow(
 				# box(
@@ -39,7 +43,7 @@ body <- dashboardBody(
 				# 	width = 4,
 				# 	uiOutput("setSelector")
 				# ),
-				tabBox(
+				shinydashboard::tabBox(
 					title = "Filters", width = 4,
 					tabPanel(
 						title = "Sample Aliases",
@@ -56,7 +60,7 @@ body <- dashboardBody(
 						uiOutput("quality_sliders")
 					)
 				),
-				tabBox(
+				shinydashboard::tabBox(
 					title = "Plots", width = 8,
 					tabPanel(
 						"Allele Frequency",
@@ -95,10 +99,14 @@ body <- dashboardBody(
 							),
 							column(width = 3,
 								fluidRow(
-									valueBoxOutput("total_vb", width = "80%")
+									shinydashboard::valueBoxOutput(
+										"total_vb", width = "80%"
+									)
 								),
 								fluidRow(
-									valueBoxOutput("nfiltered_vb", width = "80%")
+									shinydashboard::valueBoxOutput(
+										"nfiltered_vb", width = "80%"
+									)
 								)
 							)
 						)
@@ -106,7 +114,7 @@ body <- dashboardBody(
 				)
 			),
 			fluidRow(
-				tabBox(
+				shinydashboard::tabBox(
 					title = "Variants", width = 12,
 					tabPanel(
 						"Variants",
@@ -135,7 +143,7 @@ body <- dashboardBody(
 			)
 		),
 		### ||Overview
-		tabItem(
+		shinydashboard::tabItem(
 			tabName = "overview", # quality filters?
 			fluidRow(
 				box(
@@ -157,8 +165,8 @@ body <- dashboardBody(
 )
 
 ## |UI Wrapper ----------------------------------------------------------------
-ui <- dashboardPage(
-	dashboardHeader(title = "MutantSets"),
+ui <- shinydashboard::dashboardPage(
+	shinydashboard::dashboardHeader(title = "MutantSets"),
 	sidebar,
 	body
 )
