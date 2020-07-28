@@ -31,7 +31,8 @@ Imports:
     plotly,
     scales,
     tibble,
-    V8
+    V8,
+    htmlwidgets
 Suggests: 
     testthat,
     covr
