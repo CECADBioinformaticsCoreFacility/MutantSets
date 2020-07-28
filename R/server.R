@@ -145,7 +145,20 @@ server <- function(input, output) {
 		plot <- loci() %>%
 			loci_plot()
 		#plot
-		plotly::ggplotly(plot)
+		plotly::ggplotly(dynamicTicks = TRUE, plot) %>%
+		layout_ggplotly() %>%
+		plotly::layout(
+			legend = list(
+				#y = -0.1
+				title = list(text = ""),
+				valign = "bottom"#,
+				#yanchor = "middle"
+			)
+		) %>%
+		plotly::config(
+			displaylogo = FALSE,
+			modeBarButtonsToRemove = list("hoverCompareCartesian")
+		) 
 		#girafe(code = print(plot))
 	})
 	

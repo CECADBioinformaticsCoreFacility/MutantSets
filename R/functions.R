@@ -296,10 +296,18 @@ loci_plot <- function(df) { ## var_type_colours !! global
 		) + 
 		ggplot2::labs(
 			x = "Position (bp)",
-			y = "Allele Frequency"
+			y = "Allele Frequency",
+			colour = "", alpha = ""
 		)
 }
 
+layout_ggplotly <- function(gg, x = -0.1, y = -0.04){
+	# The 1 and 2 goes into the list that contains the options for
+	# the x and y axis labels respectively
+	gg[['x']][['layout']][['annotations']][[1]][['y']] <- x
+	gg[['x']][['layout']][['annotations']][[2]][['x']] <- y
+	gg
+}
 
 # mut_type_freq_plot
 mut_type_freq_plot <- function(df) { ## var_type_colours !! global
@@ -308,7 +316,7 @@ mut_type_freq_plot <- function(df) { ## var_type_colours !! global
 		dplyr::mutate(
 			pc = (n/sum(n)) * 100
 		) %>% { 
-			ggplot2::ggplot(., aes(TYPE, n)) + 
+			ggplot2::ggplot(., ggplot2::aes(TYPE, n)) + 
 				ggplot2::geom_col(
 					ggplot2::aes(
 						fill = TYPE,
