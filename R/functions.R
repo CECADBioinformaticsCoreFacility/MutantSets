@@ -391,6 +391,19 @@ variant_column_selector <- function(meta){
 	)
 }
 
+chr_selectizer <- function(chr) {
+	shinyWidgets::pickerInput(
+		"picked_chr", "Select Chromosomes",
+		choices = chr,
+		selected = chr,
+		multiple = TRUE,
+		shinyWidgets::pickerOptions(
+			actionsBox = TRUE,
+			selectedTextFormat = "count > 3",
+		)
+	)
+}
+
 ## | Main Variant Table ----------------------------
 
 gtformatter <- function(dt, samples) {
