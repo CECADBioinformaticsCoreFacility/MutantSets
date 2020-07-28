@@ -206,7 +206,7 @@ server <- function(input, output) {
 	})
 	
 	genotypeFilterInputs <- eventReactive(sample_vars_tolisten(), {
-		lst <- map(samples(), ~input[[paste0("sample_", .x)]])
+		lst <- purrr::map(samples(), ~input[[paste0("sample_", .x)]])
 		names(lst) <- paste0("sample_", samples())
 		lst
 	})
