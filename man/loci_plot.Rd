@@ -6,6 +6,9 @@
 \usage{
 loci_plot(df)
 }
+\arguments{
+\item{df}{plot data}
+}
 \description{
 loci_plot
 }

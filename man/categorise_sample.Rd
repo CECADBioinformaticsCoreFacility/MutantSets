@@ -6,6 +6,11 @@
 \usage{
 categorise_sample(x, nm)
 }
+\arguments{
+\item{x}{genotype string}
+
+\item{nm}{sample identifier}
+}
 \description{
 categorise_sample
 }

@@ -6,6 +6,14 @@
 \usage{
 genotype_selector(samples, input)
 }
+\arguments{
+\item{samples}{Vector of sample identifiers}
+
+\item{input}{the shiny input object}
+}
+\value{
+UI for set subtraction a tagList of shinyWidgets checkboxGroupButtons
+}
 \description{
 generates genotype filtering UI elements
 }

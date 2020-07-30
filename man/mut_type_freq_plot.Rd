@@ -6,6 +6,9 @@
 \usage{
 mut_type_freq_plot(df)
 }
+\arguments{
+\item{df}{plot data}
+}
 \value{
 a plotly plot object
 }

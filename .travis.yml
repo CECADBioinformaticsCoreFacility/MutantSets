@@ -1,0 +1,9 @@
+# R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
+
+language: R
+cache: packages
+r_github_packages: knausb/vcfR
+apt_packages:
+  - libv8-dev
+after_success:
+  - Rscript -e 'covr::codecov()'

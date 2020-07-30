@@ -1,21 +1,9 @@
-
 # Global data -----------------------------------------------------------------
 # 
 gtfnames <- c(
 	"sequence", "source", "feature", "start", "end",
 	"score", "strand","phase","attributes"
 )
-# seq <- ape::as.DNAbin(getSeq(BSgenome.Celegans.UCSC.ce11))
-# vcfin <- vcfR::read.vcfR(
-# "~/Downloads/Galaxy171-[SnpSift_Filter_on_data_158].vcf", verbose = FALSE
-# )
-
-# ann <- as.data.frame( # Package this data!!
-# 	vroom::vroom(
-# 		"/media/richardjamesacton/ext/data/genomes/ce11.ensGene.gtf.gz",
-# 		col_names = gtfnames
-# 	)
-# )
 
 # var type colours
 var_type_colours <- c(
@@ -65,24 +53,6 @@ eff_extractor <- function(eff) {
 			EFF = strsplit(eff, ",")[[1]]
 		)
 	)
-}
-
-
-#' gtformfun
-#' @param dt a DT data table 
-#' @param id the name of the column to colour by genotype
-gtformfun <- function(dt, id) {
-	dt %>%
-		DT::formatStyle(
-			id, id,
-			backgroundColor = DT::styleEqual(
-				c("0/0", "0/1", "1/1"),
-				c("#458B00","#FF7F00", "#CD3333")
-			),
-			backgroundSize = '98% 88%',
-			backgroundRepeat = 'no-repeat',
-			backgroundPosition = 'center'
-		)
 }
 
 #' gen_var_eff_DT
@@ -335,6 +305,8 @@ import_deletions <- function(filenm) {
 
 #' categorise_sample
 #' 
+#' @param x genotype string
+#' @param nm sample identifier
 categorise_sample <- function(x, nm) {
 	nm <- gsub("sample_(.*)", "\\1", nm)
 	tb <- NULL
@@ -377,6 +349,7 @@ del_feat_fun <- function(df, sampids, lst) {
 
 #' loci_plot
 #' 
+#' @param df plot data
 loci_plot <- function(df) { ## var_type_colours !! global
 	ggplot2::ggplot(df, ggplot2::aes(POS, AF)) + 
 		ggplot2::geom_point(ggplot2::aes(colour = TYPE, alpha = QUAL)) + 
@@ -418,7 +391,7 @@ layout_ggplotly <- function(gg, x = -0.1, y = -0.04){
 #' 
 #' A plot of the number of variant of a given type are currently filtered
 #' 
-#' @param df
+#' @param df plot data
 #' @return a plotly plot object
 mut_type_freq_plot <- function(df) { ## var_type_colours !! global
 	df %>%
@@ -458,6 +431,7 @@ mut_type_freq_plot <- function(df) { ## var_type_colours !! global
 #' alias_samples
 #' 
 #' Generates the text input UI elements for aliasing the samples
+#' @param samples Vector of sample identifiers
 #' @return tagList of textInput elements
 alias_samples <- function(samples) {
 	renamers <- lapply(samples, function(sampid) {
@@ -473,6 +447,9 @@ alias_samples <- function(samples) {
 #' genotype_selector
 #' 
 #' generates genotype filtering UI elements
+#' @param samples Vector of sample identifiers
+#' @param input the shiny input object
+#' @return UI for set subtraction a tagList of shinyWidgets checkboxGroupButtons
 genotype_selector <- function(samples, input) {
 	selector <- lapply(samples, function(sampid) {
 		label <- paste0("Genotypes to Include for ", sampid)
@@ -502,7 +479,8 @@ genotype_selector <- function(samples, input) {
 #' variant_column_selector
 #' 
 #' generates the column selector UI element for the main variant table
-#' 
+#' @param meta data.frame column details (vcfR2tidy metadata table)
+#' @return Column selector UI element
 variant_column_selector <- function(meta){
 	opts <- meta %>%
 		dplyr::filter(!grepl("gt_", ID)) %>%
@@ -549,6 +527,23 @@ chr_selectizer <- function(chr) {
 
 ## | Main Variant Table ----------------------------
 
+#' gtformfun
+#' @param dt a DT data table 
+#' @param id the name of the column to colour by genotype
+gtformfun <- function(dt, id) {
+	dt %>%
+		DT::formatStyle(
+			id, id,
+			backgroundColor = DT::styleEqual(
+				c("0/0", "0/1", "1/1"),
+				c("#458B00","#FF7F00", "#CD3333")
+			),
+			backgroundSize = '98% 88%',
+			backgroundRepeat = 'no-repeat',
+			backgroundPosition = 'center'
+		)
+}
+
 #' gtformatter
 #' 
 #' Applies the formatter to each sample column in turn and adds the next
@@ -562,11 +557,42 @@ gtformatter <- function(dt, samples) {
 	Reduce(gtformfun, samples, init = dt)
 }
 
+#' barplotformfun
+#' @param dt a DT data table 
+#' @param id the name of the column to colour by genotype
+#' @param df data frame for scale values
+barplotformfun <- function(dt, id, df) {
+	dt %>%
+		DT::formatStyle(
+			id, id,
+			background = DT::styleColorBar(
+				df[[id]],
+				'lightblue'
+			),
+			backgroundSize = '98% 88%',
+			backgroundRepeat = 'no-repeat',
+			backgroundPosition = 'center'
+		)
+}
+
+#' barplotformatter
+#' 
+#' Applies the formatter to each sample column in turn and adds the next
+#' formatting rule to the DT object for all samples
+#' 
+#' @param dt a DTdatatable object
+#' @param vars a character vector of variables
+barplotformatter <- function(dt, vars, df) {
+	purrr::reduce(vars, barplotformfun, df, .init = dt)
+}
 
 #' gen_var_tab
 #' 
 #' Formatting the main variant table
 #' 
+#' @param loci data.frame / tibble of loci
+#' @param samples Vector of sample identifiers
+#' @param aliases Vector of sample aliases
 gen_var_tab <- function(loci, samples, aliases) {
 	# don't display the long EFF column or the unique position identifier
 	df <- loci %>% dplyr::select(-EFF, -pos)
@@ -604,26 +630,8 @@ gen_var_tab <- function(loci, samples, aliases) {
 			)
 		) %>%
 		## barplots ~ reactive to column selection ~ errors when deselecting default columns
+		barplotformatter(vars = c("DP", "QUAL", "QR", "QA"), df = df) %>%
 		DT::formatStyle(
-			'DP','DP',
-			background = DT::styleColorBar(
-				df[["DP"]],
-				'lightblue'
-			),
-			backgroundSize = '98% 88%',
-			backgroundRepeat = 'no-repeat',
-			backgroundPosition = 'center'
-		) %>%
-		DT::formatStyle(
-			'QUAL','QUAL',
-			background = DT::styleColorBar(
-				df[["QUAL"]],
-				'lightblue'
-			),
-			backgroundSize = '98% 88%',
-			backgroundRepeat = 'no-repeat',
-			backgroundPosition = 'center'
-		) %>% DT::formatStyle(
 			"TYPE", "TYPE",
 			backgroundColor = DT::styleEqual(
 				names(var_type_colours), var_type_colours
@@ -639,8 +647,3 @@ gen_var_tab <- function(loci, samples, aliases) {
 	
 	return(dt)
 }
-
-
-# ,
-# sliderInput("QR", "Reference Quality"),
-# sliderInput("QA", "Alternative Quality")

@@ -203,8 +203,8 @@ server <- function(input, output) {
 		row <- loci() %>% dplyr::slice(input$filtVarsDT_row_last_clicked)
 		wormbase_view(
 			gsub("chr", "", row$CHROM),
-			row$POS - 1000,
-			row$POS + 1000,
+			row$POS - 5000,
+			row$POS + 5000,
 			row$POS - 1,
 			row$POS
 		)

@@ -6,6 +6,13 @@
 \usage{
 gen_var_tab(loci, samples, aliases)
 }
+\arguments{
+\item{loci}{data.frame / tibble of loci}
+
+\item{samples}{Vector of sample identifiers}
+
+\item{aliases}{Vector of sample aliases}
+}
 \description{
 Formatting the main variant table
 }
