@@ -10,10 +10,10 @@ sidebar <- shinydashboard::dashboardSidebar(
 		#menuItem("Options", tabName = "options", icon = icon("th")),
 		shinydashboard::menuItem(
 			"Filtering", tabName = "table", icon = icon("table")
-		),
-		shinydashboard::menuItem(
-			"Overview", tabName = "overview", icon = icon("th")
 		)#,
+		# shinydashboard::menuItem(
+		# 	"Overview", tabName = "overview", icon = icon("th")
+		# )#,
 		#uiOutput("DPslider"),
 		#uiOutput("MQslider"),
 		#uiOutput("min_QUAL")
@@ -78,7 +78,7 @@ body <- shinydashboard::dashboardBody(
 						#plotOutput("chrplot", click = "chrplotclick")#,
 						plotly::plotlyOutput("chrplot"),
 						#verbatimTextOutput("chrplot_sel")
-						actionButton("reset","Reset Point selection")#,
+						# actionButton("reset","Reset Point selection")#,
 						#verbatimTextOutput("chrplot_click")
 						#verbatimTextOutput("tmp")
 						#girafeOutput("chrplot")
@@ -92,9 +92,9 @@ body <- shinydashboard::dashboardBody(
 						"Genome Browser",
 						htmlOutput("genomeBrowser")
 					),
-					tabPanel(
-						"Sets"
-					),
+					# tabPanel(
+					# 	"Sets"
+					# ),
 					tabPanel(
 						"Variant Types",
 						fluidRow(
@@ -146,26 +146,26 @@ body <- shinydashboard::dashboardBody(
 				# 	downloadButton("downloadData")
 				# )
 			)
-		),
+		)#,
 		### ||Overview
-		shinydashboard::tabItem(
-			tabName = "overview", # quality filters?
-			fluidRow(
-				box(
-					title = "Quality Ranges", 
-					status = "primary", solidHeader = TRUE, collapsible = TRUE,
-					width = 4,
-					#plotOutput("qualplot")
-				),
-				box(
-					title = "Chr Plots", 
-					status = "primary", solidHeader = TRUE, collapsible = TRUE,
-					width = 8,
-					#uiOutput("chr"),
-					#plotOutput("chrPlot")
-				)
-			)
-		)
+		# shinydashboard::tabItem(
+		# 	tabName = "overview", # quality filters?
+		# 	fluidRow(
+		# 		box(
+		# 			title = "Quality Ranges", 
+		# 			status = "primary", solidHeader = TRUE, collapsible = TRUE,
+		# 			width = 4,
+		# 			#plotOutput("qualplot")
+		# 		),
+		# 		box(
+		# 			title = "Chr Plots", 
+		# 			status = "primary", solidHeader = TRUE, collapsible = TRUE,
+		# 			width = 8,
+		# 			#uiOutput("chr"),
+		# 			#plotOutput("chrPlot")
+		# 		)
+		# 	)
+		# )
 	)
 )
 
