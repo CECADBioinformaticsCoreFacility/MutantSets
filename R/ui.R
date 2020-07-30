@@ -4,7 +4,6 @@
 # Define UI for application that draws a histogram
 sidebar <- shinydashboard::dashboardSidebar(
 	shinydashboard::sidebarMenu(
-		#menuItem("Inputs", tabName = "inputs", icon = icon("upload")),
 		fileInput("vcf", "Select a VCF file", accept = ".vcf"),
 		fileInput("gff", "Select a gff file", accept = ".gff"),
 		#menuItem("Options", tabName = "options", icon = icon("th")),
@@ -14,9 +13,6 @@ sidebar <- shinydashboard::dashboardSidebar(
 		# shinydashboard::menuItem(
 		# 	"Overview", tabName = "overview", icon = icon("th")
 		# )#,
-		#uiOutput("DPslider"),
-		#uiOutput("MQslider"),
-		#uiOutput("min_QUAL")
 	)
 )
 ## |Body ----------------------------------------------------------------------
@@ -134,17 +130,6 @@ body <- shinydashboard::dashboardBody(
 						DT::DTOutput("filteredDels")
 					)
 				)
-				# box(
-				# 	title = "Variants", 
-				# 	status = "primary", solidHeader = TRUE, collapsible = TRUE,
-				# 	width = 12,
-				# 	#DT::DTOutput("tidytab")
-				# 	#dropdownButton(
-				# 		uiOutput("col_picker"),
-				# 	#),
-				# 	DT::DTOutput("filtVarsDT"),
-				# 	downloadButton("downloadData")
-				# )
 			)
 		)#,
 		### ||Overview

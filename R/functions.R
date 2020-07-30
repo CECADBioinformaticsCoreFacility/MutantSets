@@ -4,17 +4,6 @@ gtfnames <- c(
 	"sequence", "source", "feature", "start", "end",
 	"score", "strand","phase","attributes"
 )
-# seq <- ape::as.DNAbin(getSeq(BSgenome.Celegans.UCSC.ce11))
-# vcfin <- vcfR::read.vcfR(
-# "~/Downloads/Galaxy171-[SnpSift_Filter_on_data_158].vcf", verbose = FALSE
-# )
-
-# ann <- as.data.frame( # Package this data!!
-# 	vroom::vroom(
-# 		"/media/richardjamesacton/ext/data/genomes/ce11.ensGene.gtf.gz",
-# 		col_names = gtfnames
-# 	)
-# )
 
 # var type colours
 var_type_colours <- c(
@@ -649,8 +638,3 @@ gen_var_tab <- function(loci, samples, aliases) {
 	
 	return(dt)
 }
-
-
-# ,
-# sliderInput("QR", "Reference Quality"),
-# sliderInput("QA", "Alternative Quality")
