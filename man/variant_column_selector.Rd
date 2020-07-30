@@ -6,6 +6,12 @@
 \usage{
 variant_column_selector(meta)
 }
+\arguments{
+\item{meta}{data.frame column details (vcfR2tidy metadata table)}
+}
+\value{
+Column selector UI element
+}
 \description{
 generates the column selector UI element for the main variant table
 }

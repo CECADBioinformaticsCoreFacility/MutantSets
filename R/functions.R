@@ -1,4 +1,3 @@
-
 # Global data -----------------------------------------------------------------
 # 
 gtfnames <- c(
@@ -335,6 +334,8 @@ import_deletions <- function(filenm) {
 
 #' categorise_sample
 #' 
+#' @param x genotype string
+#' @param nm sample identifier
 categorise_sample <- function(x, nm) {
 	nm <- gsub("sample_(.*)", "\\1", nm)
 	tb <- NULL
@@ -377,6 +378,7 @@ del_feat_fun <- function(df, sampids, lst) {
 
 #' loci_plot
 #' 
+#' @param df plot data
 loci_plot <- function(df) { ## var_type_colours !! global
 	ggplot2::ggplot(df, ggplot2::aes(POS, AF)) + 
 		ggplot2::geom_point(ggplot2::aes(colour = TYPE, alpha = QUAL)) + 
@@ -418,7 +420,7 @@ layout_ggplotly <- function(gg, x = -0.1, y = -0.04){
 #' 
 #' A plot of the number of variant of a given type are currently filtered
 #' 
-#' @param df
+#' @param df plot data
 #' @return a plotly plot object
 mut_type_freq_plot <- function(df) { ## var_type_colours !! global
 	df %>%
@@ -458,6 +460,7 @@ mut_type_freq_plot <- function(df) { ## var_type_colours !! global
 #' alias_samples
 #' 
 #' Generates the text input UI elements for aliasing the samples
+#' @param samples Vector of sample identifiers
 #' @return tagList of textInput elements
 alias_samples <- function(samples) {
 	renamers <- lapply(samples, function(sampid) {
@@ -473,6 +476,9 @@ alias_samples <- function(samples) {
 #' genotype_selector
 #' 
 #' generates genotype filtering UI elements
+#' @param samples Vector of sample identifiers
+#' @param input the shiny input object
+#' @return UI for set subtraction a tagList of shinyWidgets checkboxGroupButtons
 genotype_selector <- function(samples, input) {
 	selector <- lapply(samples, function(sampid) {
 		label <- paste0("Genotypes to Include for ", sampid)
@@ -502,7 +508,8 @@ genotype_selector <- function(samples, input) {
 #' variant_column_selector
 #' 
 #' generates the column selector UI element for the main variant table
-#' 
+#' @param meta data.frame column details (vcfR2tidy metadata table)
+#' @return Column selector UI element
 variant_column_selector <- function(meta){
 	opts <- meta %>%
 		dplyr::filter(!grepl("gt_", ID)) %>%
@@ -567,6 +574,9 @@ gtformatter <- function(dt, samples) {
 #' 
 #' Formatting the main variant table
 #' 
+#' @param loci data.frame / tibble of loci
+#' @param samples Vector of sample identifiers
+#' @param aliases Vector of sample aliases
 gen_var_tab <- function(loci, samples, aliases) {
 	# don't display the long EFF column or the unique position identifier
 	df <- loci %>% dplyr::select(-EFF, -pos)

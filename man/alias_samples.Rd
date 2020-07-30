@@ -6,6 +6,9 @@
 \usage{
 alias_samples(samples)
 }
+\arguments{
+\item{samples}{Vector of sample identifiers}
+}
 \value{
 tagList of textInput elements
 }
