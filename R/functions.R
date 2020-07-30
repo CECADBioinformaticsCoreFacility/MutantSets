@@ -55,24 +55,6 @@ eff_extractor <- function(eff) {
 	)
 }
 
-
-#' gtformfun
-#' @param dt a DT data table 
-#' @param id the name of the column to colour by genotype
-gtformfun <- function(dt, id) {
-	dt %>%
-		DT::formatStyle(
-			id, id,
-			backgroundColor = DT::styleEqual(
-				c("0/0", "0/1", "1/1"),
-				c("#458B00","#FF7F00", "#CD3333")
-			),
-			backgroundSize = '98% 88%',
-			backgroundRepeat = 'no-repeat',
-			backgroundPosition = 'center'
-		)
-}
-
 #' gen_var_eff_DT
 #' Generates the datatable of predicted variant effects
 #' @param loci a data.frame / tibble of loci
@@ -545,6 +527,23 @@ chr_selectizer <- function(chr) {
 
 ## | Main Variant Table ----------------------------
 
+#' gtformfun
+#' @param dt a DT data table 
+#' @param id the name of the column to colour by genotype
+gtformfun <- function(dt, id) {
+	dt %>%
+		DT::formatStyle(
+			id, id,
+			backgroundColor = DT::styleEqual(
+				c("0/0", "0/1", "1/1"),
+				c("#458B00","#FF7F00", "#CD3333")
+			),
+			backgroundSize = '98% 88%',
+			backgroundRepeat = 'no-repeat',
+			backgroundPosition = 'center'
+		)
+}
+
 #' gtformatter
 #' 
 #' Applies the formatter to each sample column in turn and adds the next
@@ -558,6 +557,34 @@ gtformatter <- function(dt, samples) {
 	Reduce(gtformfun, samples, init = dt)
 }
 
+#' barplotformfun
+#' @param dt a DT data table 
+#' @param id the name of the column to colour by genotype
+#' @param df data frame for scale values
+barplotformfun <- function(dt, id, df) {
+	dt %>%
+		DT::formatStyle(
+			id, id,
+			background = DT::styleColorBar(
+				df[[id]],
+				'lightblue'
+			),
+			backgroundSize = '98% 88%',
+			backgroundRepeat = 'no-repeat',
+			backgroundPosition = 'center'
+		)
+}
+
+#' barplotformatter
+#' 
+#' Applies the formatter to each sample column in turn and adds the next
+#' formatting rule to the DT object for all samples
+#' 
+#' @param dt a DTdatatable object
+#' @param vars a character vector of variables
+barplotformatter <- function(dt, vars, df) {
+	purrr::reduce(vars, barplotformfun, df, .init = dt)
+}
 
 #' gen_var_tab
 #' 
@@ -603,26 +630,8 @@ gen_var_tab <- function(loci, samples, aliases) {
 			)
 		) %>%
 		## barplots ~ reactive to column selection ~ errors when deselecting default columns
+		barplotformatter(vars = c("DP", "QUAL", "QR", "QA"), df = df) %>%
 		DT::formatStyle(
-			'DP','DP',
-			background = DT::styleColorBar(
-				df[["DP"]],
-				'lightblue'
-			),
-			backgroundSize = '98% 88%',
-			backgroundRepeat = 'no-repeat',
-			backgroundPosition = 'center'
-		) %>%
-		DT::formatStyle(
-			'QUAL','QUAL',
-			background = DT::styleColorBar(
-				df[["QUAL"]],
-				'lightblue'
-			),
-			backgroundSize = '98% 88%',
-			backgroundRepeat = 'no-repeat',
-			backgroundPosition = 'center'
-		) %>% DT::formatStyle(
 			"TYPE", "TYPE",
 			backgroundColor = DT::styleEqual(
 				names(var_type_colours), var_type_colours
