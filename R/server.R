@@ -60,7 +60,29 @@ server <- function(input, output) {
 				inval <- input[[paste0("sample_", sampids[i])]]
 				if(!is.null(inval)) {
 					dff <- dff[
-						unlist(sapply(dff[[sampids[i]]], get_genotype_class)) %in% 
+						unlist(
+							sapply(dff[[sampids[i]]], get_genotype_class)
+						) %in% 
+						unlist(sapply(inval, get_genotype_class)),
+					]
+				}
+			}
+			dff
+		}
+	})
+	
+	delfiltfun <- eventReactive(sample_vars_tolisten(), {
+		function(dff, sampids) {
+			for (i in seq_along(sampids)) {
+				inval <- input[[paste0("sample_", sampids[i])]]
+				if(!is.null(inval)) {
+					dff <- dff[
+						unlist(
+							sapply(
+								dff[[paste0("score_",sampids[i])]],
+								get_del_gen_class
+							)
+						) %in% 
 						unlist(sapply(inval, get_genotype_class)),
 					]
 				}
@@ -195,12 +217,12 @@ server <- function(input, output) {
 		gen_var_eff_DT(loci(), input$filtVarsDT_row_last_clicked)
 	})
 	
-	output$genomeBrowser <- renderText({
-		#req(input$filtVarsDT_row_last_clicked)
-		if(is.null(input$filtVarsDT_row_last_clicked)) {
-			return("Please select a variant to view...")
-		}
+	genomeBrowserString <- reactiveValues()
+	
+	observeEvent(input$filtVarsDT_row_last_clicked, {
+		req(input$filtVarsDT_row_last_clicked)
 		row <- loci() %>% dplyr::slice(input$filtVarsDT_row_last_clicked)
+		genomeBrowserString$string <- 
 		wormbase_view(
 			gsub("chr", "", row$CHROM),
 			row$POS - 5000,
@@ -208,6 +230,31 @@ server <- function(input, output) {
 			row$POS - 1,
 			row$POS
 		)
+	})
+	
+	observeEvent(input$filteredDels_row_last_clicked, {
+		req(input$filteredDels_row_last_clicked)
+		row <- delTab() %>% dplyr::slice(input$filteredDels_row_last_clicked)
+		genomeBrowserString$string <- 
+			wormbase_view(
+				gsub("chr", "", row$sequence),
+				row$start - 5000,
+				row$end + 5000,
+				row$start,
+				row$end
+			)
+	})
+	
+	output$genomeBrowser <- renderText({
+		if(
+			all(
+				is.null(input$filtVarsDT_row_last_clicked),
+				is.null(input$filteredDels_row_last_clicked)
+			)
+		) {
+			return("Please select a variant to view...")
+		}
+		genomeBrowserString$string
 		
 	})
 	
@@ -233,20 +280,15 @@ server <- function(input, output) {
 			dplyr::group_by(sequence, feature, start, end) %>%
 			tidyr::pivot_wider(
 				names_from = sample, values_from = c("score", "p_value")
-			)
-	})
-	
-	genotypeFilterInputs <- eventReactive(sample_vars_tolisten(), {
-		lst <- purrr::map(samples(), ~input[[paste0("sample_", .x)]])
-		names(lst) <- paste0("sample_", samples())
-		lst
+			) %>%
+			ungroup()
 	})
 	
 	delTab <- reactive({
-		del_feat_fun(gff_wide(), samples(), genotypeFilterInputs())
+		gff_wide() %>% delfiltfun()(samples())
 	})
 	
 	output$filteredDels <- DT::renderDataTable({
-		delTab() %>% DT::datatable(rownames = FALSE)
-	})
+		delTab() %>% DT::datatable(rownames = FALSE, selection = "single")
+	}, server = TRUE)
 }

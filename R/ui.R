@@ -50,6 +50,7 @@ body <- shinydashboard::dashboardBody(
 						solidHeader = TRUE, collapsible = TRUE,
 						uiOutput("chr_selection"),
 						uiOutput("setSelector"),
+						#verbatimTextOutput("test"),
 						"*Note that at loci with multiple variants 1/1 will also allow homozygous alternate alleles e.g. 2/2 etc."
 					),
 					tabPanel(

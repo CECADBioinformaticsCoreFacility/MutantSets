@@ -14,12 +14,14 @@
 - [ ] set membership plot - which sets
 - [ ] show full gt table in Tab box
 - [ ] Download button deletion/multivar
+- [ ] Column name selection formatter handling to prevent errors on deselection
+	of pre-selected columns
 - [ ] keys??
-- [ ] automated testing of functions
-- [ ] complete function documentation
 
 ## Partial implementation needs follow-up
 
+- [x] complete function documentation
+- [x] automated testing of functions
 - [x] extended Quality filtering options
 - [x] multi variant loci handling
 - [ ] wormbase links? ~ 
