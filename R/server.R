@@ -285,10 +285,22 @@ server <- function(input, output) {
 	})
 	
 	delTab <- reactive({
-		gff_wide() %>% delfiltfun()(samples())
+		gff_wide() %>% 
+			delfiltfun()(samples()) %>%
+			dplyr::filter(sequence %in% input$picked_chr)
 	})
 	
 	output$filteredDels <- DT::renderDataTable({
-		delTab() %>% DT::datatable(rownames = FALSE, selection = "single")
+		delTab() %>% 
+			#DT::datatable(rownames = FALSE, selection = "single")
+			gen_del_tab(samples(), aliases())
 	}, server = TRUE)
+	
+	# | Download data ----------------------------------------------------------
+	output$downloadDelData <- downloadHandler(
+		filename = "selected_deletions.tsv",
+		content = function(file) {
+			vroom::vroom_write(delTab(), file)
+		}
+	)
 }

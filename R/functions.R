@@ -627,3 +627,32 @@ gen_var_tab <- function(loci, samples, aliases) {
 	
 	return(dt)
 }
+
+#' gen_del_tab
+#' 
+#' Formatting the deletion variant table
+#' 
+#' @param deltab data.frame / tibble of loci
+#' @param samples Vector of sample identifiers
+#' @param aliases Vector of sample aliases
+gen_del_tab <- function(deltab, samples, aliases) {
+	aliases[aliases == ""] <- samples[aliases == ""]
+	cnms <- colnames(deltab)
+	purrr::walk2(
+		samples, aliases, ~{
+			cnms <<- gsub(
+				paste0("(.*_)", .x ,""),
+				paste0("\\1",.y),
+				cnms
+			)
+		}
+	)
+	deltab %>%
+		DT::datatable(
+			colnames = cnms,
+			rownames = FALSE, selection = "single",
+			options = list(
+				scrollX = TRUE
+			)
+		)
+}

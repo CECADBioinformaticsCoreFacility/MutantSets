@@ -128,7 +128,8 @@ body <- shinydashboard::dashboardBody(
 					tabPanel(
 						"MiModD deletions",
 						# verbatimTextOutput("test"),
-						DT::DTOutput("filteredDels")
+						DT::DTOutput("filteredDels"),
+						downloadButton("downloadDelData")
 					)
 				)
 			)
