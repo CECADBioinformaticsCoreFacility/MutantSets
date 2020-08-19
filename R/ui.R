@@ -63,15 +63,15 @@ body <- shinydashboard::dashboardBody(
 					tabPanel(
 						"Allele Frequency",
 						shinyjs::useShinyjs(),
-						shinyjs::extendShinyjs(
-							text = paste0(
-								"shinyjs.resetClick = function() {",
-								"Shiny.onInputChange(",
-								"'.clientValue-plotly_click-A', 'null'",
-								"); ",
-								"}"
-							)
-						),
+						# shinyjs::extendShinyjs(
+						# 	text = paste0(
+						# 		"shinyjs.resetClick = function() {",
+						# 		"Shiny.onInputChange(",
+						# 		"'.clientValue-plotly_click-A', 'null'",
+						# 		"); ",
+						# 		"}"
+						# 	)
+						# ),
 						#plotOutput("chrplot", click = "chrplotclick")#,
 						plotly::plotlyOutput("chrplot"),
 						#verbatimTextOutput("chrplot_sel")
