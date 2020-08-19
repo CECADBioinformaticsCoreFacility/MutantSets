@@ -124,7 +124,7 @@ wormbase_view <- function(chr, vstart, vend, hstart = NULL, hend = NULL) {
 DP_slider <- function(allloci) {
 	rng <- range(allloci$DP, na.rm = TRUE)
 	sliderInput(
-		"DP_filter", "Depth (DP)",
+		"DP_filter", "Depth (DP) default max: 3x mean",
 		min = rng[1], max = rng[2],
 		value = c(rng[1], mean(allloci$DP) * 3),
 		step = 1
@@ -158,12 +158,21 @@ QA_slider <- function(allloci) {
 	)
 }
 
+AF_slider <- function() {
+	sliderInput(
+		"AF_filter", "Variant Allele Frequence (AF)",
+		min = 0, max = 1,
+		value = 0.8, step = 0.01
+	)
+}
+
 quality_sliders <- function(allloci) {
 	tagList(
 		DP_slider(allloci),
 		QUAL_slider(allloci),
 		QR_slider(allloci),
-		QA_slider(allloci)
+		QA_slider(allloci),
+		AF_slider()
 	)
 }
 
@@ -173,6 +182,7 @@ quality_filters <- function(df, input) {
 		QUAL >= input$QUAL_filter,
 		QR >= input$QR_filter,
 		QA >= input$QA_filter,
+		AF >= input$AF_filter
 	)
 }
 
