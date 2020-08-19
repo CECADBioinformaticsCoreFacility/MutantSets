@@ -93,7 +93,7 @@ gen_var_eff_DT <- function(loci, row_clicked) {
 #' @return character string of html embed tag for jbrowe at locus
 wormbase_view <- function(chr, vstart, vend, hstart = NULL, hend = NULL) {
 	# NB chr form: "III"	
-	stopifnot(chr %in% c(as.character(as.roman(1:6)),"M","X"))
+	stopifnot(chr %in% c(as.character(utils::as.roman(1:6)),"M","X"))
 	url <- paste0("https://wormbase.org/tools/genome/jbrowse-simple/",
 		"?data=data%2Fc_elegans_PRJNA13758&",
 		"loc=", chr, "%3A", vstart, "..", vend,
@@ -551,6 +551,7 @@ barplotformfun <- function(dt, id, df) {
 #' 
 #' @param dt a DTdatatable object
 #' @param vars a character vector of variables
+#' @param df initial object
 barplotformatter <- function(dt, vars, df) {
 	purrr::reduce(vars, barplotformfun, df, .init = dt)
 }
