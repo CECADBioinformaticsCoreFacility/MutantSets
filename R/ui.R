@@ -6,6 +6,7 @@ sidebar <- shinydashboard::dashboardSidebar(
 	shinydashboard::sidebarMenu(
 		fileInput("vcf", "Select a VCF file", accept = ".vcf"),
 		fileInput("gff", "Select a gff file", accept = ".gff"),
+		actionButton("go","Start / Apply Filters"),
 		#menuItem("Options", tabName = "options", icon = icon("th")),
 		shinydashboard::menuItem(
 			"Filtering", tabName = "table", icon = icon("table")

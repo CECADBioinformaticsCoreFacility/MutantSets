@@ -112,7 +112,13 @@ server <- function(input, output) {
 		# }
 		
 		#dplyr::pull(pos)
-	})
+	}) %>%
+	bindCache(
+		input$DP_filter, input$QUAL_filter, input$QR_filter,
+		input$QA_filter, input$AF_filter, 
+		input$picked_chr
+	) %>%
+		bindEvent(input$go)
 	
 	# Genotype filtering ------------------------------------------------------
 	## | Set sample names -----------------------------------------------------
