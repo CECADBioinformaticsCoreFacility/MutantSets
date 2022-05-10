@@ -83,6 +83,10 @@ body <- shinydashboard::dashboardBody(
 						#verbatimTextOutput("testpoints")
 					),
 					tabPanel(
+						"Variant Density",
+						plotly::plotlyOutput("vdplot")
+					),
+					tabPanel(
 						"Effect",
 						DT::DTOutput("effect")
 					),
