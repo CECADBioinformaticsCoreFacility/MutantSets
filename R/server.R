@@ -112,7 +112,13 @@ server <- function(input, output) {
 		# }
 		
 		#dplyr::pull(pos)
-	})
+	}) %>%
+	bindCache(
+		input$DP_filter, input$QUAL_filter, input$QR_filter,
+		input$QA_filter, input$AF_filter, 
+		input$picked_chr
+	) %>%
+		bindEvent(input$go)
 	
 	# Genotype filtering ------------------------------------------------------
 	## | Set sample names -----------------------------------------------------
@@ -186,6 +192,24 @@ server <- function(input, output) {
 		#girafe(code = print(plot))
 	})
 	
+	## | Variant Denisty Plot -------------------------------------------------
+	output$vdplot <- plotly::renderPlotly({
+		loci() %>% 
+			SNP_freq_plot() %>%
+			plotly::ggplotly(dynamicTicks = TRUE, .) %>%
+			layout_ggplotly() %>%
+			plotly::layout(
+				legend = list(
+					title = list(text = ""),
+					valign = "bottom"
+				)
+			) %>%
+			plotly::config(
+				displaylogo = FALSE,
+				modeBarButtonsToRemove = list("hoverCompareCartesian")
+			) 
+		
+	})
 	
 	# output$chrplot_sel <- renderPrint({
 	# 	event_data("plotly_selected")

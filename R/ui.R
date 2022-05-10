@@ -6,6 +6,7 @@ sidebar <- shinydashboard::dashboardSidebar(
 	shinydashboard::sidebarMenu(
 		fileInput("vcf", "Select a VCF file", accept = ".vcf"),
 		fileInput("gff", "Select a gff file", accept = ".gff"),
+		actionButton("go","Start / Apply Filters"),
 		#menuItem("Options", tabName = "options", icon = icon("th")),
 		shinydashboard::menuItem(
 			"Filtering", tabName = "table", icon = icon("table")
@@ -80,6 +81,10 @@ body <- shinydashboard::dashboardBody(
 						#verbatimTextOutput("tmp")
 						#girafeOutput("chrplot")
 						#verbatimTextOutput("testpoints")
+					),
+					tabPanel(
+						"Variant Density",
+						plotly::plotlyOutput("vdplot")
 					),
 					tabPanel(
 						"Effect",

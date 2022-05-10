@@ -347,6 +347,23 @@ loci_plot <- function(df) { ## var_type_colours !! global
 		)
 }
 
+## | SNP_freq_plot ------------------------------------------------------------
+
+SNP_freq_plot <- function(df) {
+	ggplot2::ggplot(df, ggplot2::aes(POS)) +
+		ggplot2::geom_density() +
+		ggplot2::facet_wrap(~CHROM, nrow = 1, scales = "free_x") + 
+		ggplot2::scale_x_continuous(labels = scales::comma) +
+		ggplot2::theme_light() +
+		ggplot2::theme(
+			axis.text.x = ggplot2::element_text(angle = 30, hjust = 1)
+		) + 
+		ggplot2::labs(
+			x = "Position (bp)",
+			y = "Variant Density"#,colour = "", alpha = ""
+		)
+}
+
 #' layout_ggplotly
 #' 
 #' Tweaks the layout of the x and y axis labels so they don't overlap

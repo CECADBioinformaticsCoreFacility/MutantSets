@@ -6,7 +6,7 @@
 [![Travis build status](https://travis-ci.com/CECADBioinformaticsCoreFacility/MutantSets.svg?branch=master)](https://travis-ci.com/CECADBioinformaticsCoreFacility/MutantSets)
 <!-- badges: end -->
 
-The goal of MutantSets is to ...
+The goal of MutantSets is to permit the exploration of the results of whole genome sequencing and mutation calling in *C. elegans*, with the goal of identify candidate mutations responsible for phenotypes in genetic screens though mapping by sequencing.
 
 ## Installation
 
@@ -30,3 +30,8 @@ To start the app run:
 MutantSets::launchApp()
 ```
 
+For instructions on how to prepare data for use in this app see the vignette:
+
+```r
+vignette("Generating-input", package = "MutantSets")
+```
