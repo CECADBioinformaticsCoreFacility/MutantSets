@@ -35,3 +35,9 @@ For instructions on how to prepare data for use in this app see the vignette:
 ```r
 vignette("Generating-input", package = "MutantSets")
 ```
+
+## Run on Renku
+
+https://renkulab.io/projects/racton/mutantsets
+
+You can Run MutantSets without installing it on your local machine by going to it's page on Renkulab.io and hitting start, it will take a minute to get spun up but should work just fine after that. Click open to view in full screen.
