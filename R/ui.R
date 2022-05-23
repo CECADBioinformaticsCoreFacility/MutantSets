@@ -2,8 +2,8 @@
 ## |Sidebar -------------------------------------------------------------------
 
 # Define UI for application that draws a histogram
-sidebar <- dashboardSidebar(
-	sidebarMenu(
+sidebar <- bs4Dash::dashboardSidebar(
+	bs4Dash::sidebarMenu(
 		fileInput("vcf", "Select a VCF file", accept = ".vcf"),
 		fileInput("gff", "Select a gff file", accept = ".gff"),
 		actionButton("go","Start / Apply Filters"),
@@ -17,9 +17,9 @@ sidebar <- dashboardSidebar(
 	)
 )
 ## |Body ----------------------------------------------------------------------
-body <- dashboardBody(
+body <- bs4Dash::dashboardBody(... = 
 	shinybusy::add_busy_spinner(spin = "fading-circle"),
-	tabItems(
+	bs4Dash::tabItems(
 		### ||Options ---------------------------------------------------------
 		# tabItem(
 		# 	tabName = "options",
@@ -31,7 +31,7 @@ body <- dashboardBody(
 		# 	)
 		# ),
 		### ||Table - ---------------------------------------------------------
-		tabItem(
+		bs4Dash::tabItem(
 			tabName = "table",
 			fluidRow(
 				# box(
@@ -40,7 +40,7 @@ body <- dashboardBody(
 				# 	width = 4,
 				# 	uiOutput("setSelector")
 				# ),
-				tabBox(
+				bs4Dash::tabBox(
 					title = "Filters", width = 4,
 					tabPanel(
 						title = "Sample Aliases",
@@ -62,7 +62,7 @@ body <- dashboardBody(
 				## || Plots tabs ----
 				bs4Dash::tabBox(
 					title = "Plots", width = 8,
-					sidebar = boxSidebar(
+					sidebar = bs4Dash::boxSidebar(
 						id = "allele_plot_sidebar",
 						width = 25,
 						numericInput("width", "width", 9, 0, 96000),
@@ -145,7 +145,7 @@ body <- dashboardBody(
 				)
 			),
 			fluidRow(
-				tabBox(
+				bs4Dash::tabBox(
 					title = "Variants", width = 12,
 					tabPanel(
 						"Variants",
@@ -186,8 +186,8 @@ body <- dashboardBody(
 )
 
 ## |UI Wrapper ----------------------------------------------------------------
-ui <- dashboardPage(
-	dashboardHeader(title = "MutantSets"),
+ui <- bs4Dash::dashboardPage(
+	bs4Dash::dashboardHeader(title = "MutantSets"),
 	sidebar,
 	body
 )
