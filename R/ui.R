@@ -2,24 +2,24 @@
 ## |Sidebar -------------------------------------------------------------------
 
 # Define UI for application that draws a histogram
-sidebar <- shinydashboard::dashboardSidebar(
-	shinydashboard::sidebarMenu(
+sidebar <- dashboardSidebar(
+	sidebarMenu(
 		fileInput("vcf", "Select a VCF file", accept = ".vcf"),
 		fileInput("gff", "Select a gff file", accept = ".gff"),
 		actionButton("go","Start / Apply Filters"),
 		#menuItem("Options", tabName = "options", icon = icon("th")),
-		shinydashboard::menuItem(
+		menuItem(
 			"Filtering", tabName = "table", icon = icon("table")
 		)#,
-		# shinydashboard::menuItem(
+		# menuItem(
 		# 	"Overview", tabName = "overview", icon = icon("th")
 		# )#,
 	)
 )
 ## |Body ----------------------------------------------------------------------
-body <- shinydashboard::dashboardBody(
+body <- dashboardBody(
 	shinybusy::add_busy_spinner(spin = "fading-circle"),
-	shinydashboard::tabItems(
+	tabItems(
 		### ||Options ---------------------------------------------------------
 		# tabItem(
 		# 	tabName = "options",
@@ -31,7 +31,7 @@ body <- shinydashboard::dashboardBody(
 		# 	)
 		# ),
 		### ||Table - ---------------------------------------------------------
-		shinydashboard::tabItem(
+		tabItem(
 			tabName = "table",
 			fluidRow(
 				# box(
@@ -40,7 +40,7 @@ body <- shinydashboard::dashboardBody(
 				# 	width = 4,
 				# 	uiOutput("setSelector")
 				# ),
-				shinydashboard::tabBox(
+				tabBox(
 					title = "Filters", width = 4,
 					tabPanel(
 						title = "Sample Aliases",
@@ -59,8 +59,32 @@ body <- shinydashboard::dashboardBody(
 						uiOutput("quality_sliders")
 					)
 				),
-				shinydashboard::tabBox(
+				## || Plots tabs ----
+				bs4Dash::tabBox(
 					title = "Plots", width = 8,
+					sidebar = boxSidebar(
+						id = "allele_plot_sidebar",
+						width = 25,
+						numericInput("width", "width", 9, 0, 96000),
+						numericInput("height", "height", 4, 0, 96000),
+						selectInput(
+							"type", "file type",
+							selected = "png", choices = c(
+								"png", "svg", "pdf", "jpeg", "eps", "ps",
+								"tiff", "bmp"
+							)
+						),
+						selectInput(
+							"units", "units", selected = "in",
+							choices = c("in", "cm", "mm", "px")
+						),
+						numericInput(
+							"dpi", "dpi",
+							value =  300, min = 1, max = 96000, step = 1
+						),
+						downloadButton("save_image", "Save Image")
+						#textInput()
+					),
 					tabPanel(
 						"Allele Frequency",
 						shinyjs::useShinyjs(),
@@ -74,7 +98,7 @@ body <- shinydashboard::dashboardBody(
 						# 	)
 						# ),
 						#plotOutput("chrplot", click = "chrplotclick")#,
-						plotly::plotlyOutput("chrplot"),
+						plotly::plotlyOutput("chrplot")#,
 						#verbatimTextOutput("chrplot_sel")
 						# actionButton("reset","Reset Point selection")#,
 						#verbatimTextOutput("chrplot_click")
@@ -106,12 +130,12 @@ body <- shinydashboard::dashboardBody(
 							),
 							column(width = 3,
 								fluidRow(
-									shinydashboard::valueBoxOutput(
+									valueBoxOutput(
 										"total_vb", width = "80%"
 									)
 								),
 								fluidRow(
-									shinydashboard::valueBoxOutput(
+									valueBoxOutput(
 										"nfiltered_vb", width = "80%"
 									)
 								)
@@ -121,7 +145,7 @@ body <- shinydashboard::dashboardBody(
 				)
 			),
 			fluidRow(
-				shinydashboard::tabBox(
+				tabBox(
 					title = "Variants", width = 12,
 					tabPanel(
 						"Variants",
@@ -140,7 +164,7 @@ body <- shinydashboard::dashboardBody(
 			)
 		)#,
 		### ||Overview
-		# shinydashboard::tabItem(
+		# tabItem(
 		# 	tabName = "overview", # quality filters?
 		# 	fluidRow(
 		# 		box(
@@ -162,8 +186,8 @@ body <- shinydashboard::dashboardBody(
 )
 
 ## |UI Wrapper ----------------------------------------------------------------
-ui <- shinydashboard::dashboardPage(
-	shinydashboard::dashboardHeader(title = "MutantSets"),
+ui <- dashboardPage(
+	dashboardHeader(title = "MutantSets"),
 	sidebar,
 	body
 )

@@ -330,18 +330,32 @@ get_del_gen_class <- function(sig) {
 #' 
 #' @param df plot data
 loci_plot <- function(df) { ## var_type_colours !! global
-	ggplot2::ggplot(df, ggplot2::aes(POS, AF)) + 
-		ggplot2::geom_point(ggplot2::aes(colour = TYPE, alpha = QUAL)) + 
+	var_count_by_chr <- df %>% 
+		dplyr::group_by(CHROM) %>%
+		dplyr::summarise(n = dplyr::n())
+	mylabs <- paste0(
+		var_count_by_chr$CHROM, " (",
+		format(var_count_by_chr$n, big.mark = ","),")"
+	)
+	names(mylabs) <- var_count_by_chr$CHROM
+	ggplot2::ggplot(df, ggplot2::aes(POS/1e6, AF)) + 
+		#ggplot2::geom_point(ggplot2::aes(colour = TYPE, alpha = QUAL)) + 
+		ggplot2::geom_point(ggplot2::aes(colour = TYPE)) + 
 		#geom_point_interactive(aes(colour = TYPE, alpha = QUAL)) + 
-		ggplot2::facet_wrap(~CHROM, nrow = 1, scales = "free_x") + 
+		ggplot2::facet_wrap(
+			~CHROM, nrow = 1, scales = "free_x",
+			labeller = ggplot2::as_labeller(mylabs)
+		) + 
 		ggplot2::scale_x_continuous(labels = scales::comma) +
 		ggplot2::scale_colour_manual(values = var_type_colours) + 
-		ggplot2::theme_light() +
+		#ggplot2::theme_light() +
+		ggplot2::theme_bw() +
+		ggplot2::lims(y = c(0, 1)) +
 		ggplot2::theme(
 			axis.text.x = ggplot2::element_text(angle = 30, hjust = 1)
 		) + 
 		ggplot2::labs(
-			x = "Position (bp)",
+			x = "Position (Mbp)",
 			y = "Allele Frequency",
 			colour = "", alpha = ""
 		)

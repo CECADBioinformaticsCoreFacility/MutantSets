@@ -168,12 +168,30 @@ server <- function(input, output) {
 	
 	
 	## | Allele Frequency plot ------------------------------------------------
+	allele_freq_plot <- reactive({
+		plot <- loci() %>% loci_plot()
+	})
+	
+	output$save_image <- downloadHandler(
+		filename = function() {
+			paste0("allele_freq_plot.", input$type)
+		},
+		content = function(file) {
+			ggplot2::ggsave(
+				filename = file, plot = allele_freq_plot(),
+				device = input$type,
+				width = input$width, height = input$height,
+				units = input$units, dpi = input$dpi
+			)
+		}
+	)
 	#output$testpoints <- renderPrint(print(input$chrplotclick))
 	#output$chrplot <- renderPlot({
 	output$chrplot <- plotly::renderPlotly({
 		#output$chrplot <- renderGirafe({
-		plot <- loci() %>%
-			loci_plot()
+		# plot <- loci() %>%
+		# 	loci_plot()
+		plot <- allele_freq_plot()
 		#plot
 		plotly::ggplotly(dynamicTicks = TRUE, plot) %>%
 		layout_ggplotly() %>%
