@@ -1687,8 +1687,8 @@ Feedback</a></li>
 <ul>
 <li><strong>Inputs:</strong>
 <ul>
-<li>paired-end fastq files to a galaxy <span class="citation">[<a href="#ref-Afgan2016" role="doc-biblioref">1</a>,<a href="#ref-Jalili2020" role="doc-biblioref">2</a>]</span> history as
-<code>list of dataset pairs</code></li>
+<li>paired-end fastq files to a galaxy <span class="citation">(<a href="#ref-Afgan2016" role="doc-biblioref">Afgan et al. 2016</a>; <a href="#ref-Jalili2020" role="doc-biblioref">Jalili et al.
+2020</a>)</span> history as <code>list of dataset pairs</code></li>
 <li>A suitable genome fasta file (<em>C. elegans</em>, ce11.fa.gz -
 Compatible with WBcel235.86 used by SnpEff)</li>
 </ul></li>
@@ -1722,8 +1722,8 @@ rules in the ‘apply rule to collection’ step of the workflow.</p>
 <div id="background" class="section level1" number="2">
 <h1><span class="header-section-number">2</span> Background</h1>
 <p>Doitsidou et al. reviewed Sequencing-Based Approaches for Mutation
-Mapping and Identification in <em>C. elegans</em> <span class="citation">[<a href="#ref-Doitsidou2016" role="doc-biblioref">3</a>]</span>. They describe three main approaches
-to mapping by sequencing:</p>
+Mapping and Identification in <em>C. elegans</em> <span class="citation">(<a href="#ref-Doitsidou2016" role="doc-biblioref">Doitsidou, Jarriault, and Poole 2016</a>)</span>.
+They describe three main approaches to mapping by sequencing:</p>
 <ol style="list-style-type: decimal">
 <li>Hawaiian variant mapping</li>
 <li>EMS-density mapping</li>
@@ -1738,16 +1738,16 @@ EMS-density mapping &amp; Variant discovery mapping (VDM).</p>
 <p>The Schumacher lab identified a need for an analysis pipeline to map
 and identify mutations in Ethyl methanesulfonate (EMS) mutagenesis
 forward genetic screens.</p>
-<p>Previously a tool called <code>CloudMap</code> <span class="citation">[<a href="#ref-Minevich2012" role="doc-biblioref">4</a>]</span> had been used for this purpose on a
-Galaxy server. <code>CloundMap</code> is no longer under active
-development and has been deprecated from <a href="https://usegalaxy.eu/">Galaxy Europe</a> and replaced by
+<p>Previously a tool called <code>CloudMap</code> <span class="citation">(<a href="#ref-Minevich2012" role="doc-biblioref">Minevich et al. 2012</a>)</span> had been used for
+this purpose on a Galaxy server. <code>CloundMap</code> is no longer
+under active development and has been deprecated from <a href="https://usegalaxy.eu/">Galaxy Europe</a> and replaced by
 <code>MiModD</code> <a href="https://mimodd.readthedocs.io/en/doc0.1.8/index.html">Docs</a></p>
 </div>
 <div id="choice-of-tools" class="section level2" number="2.2">
 <h2><span class="header-section-number">2.2</span> Choice of Tools</h2>
 <p>In a comparison of <em>C. elegans</em> mutation calling pipelines
-Smith et al. <span class="citation">[<a href="#ref-Smith2017a" role="doc-biblioref">5</a>]</span> indicated that they had good results
-with the <code>FreeBayes</code> <span class="citation">[<a href="#ref-Garrison2012" role="doc-biblioref">6</a>]</span>. So I have
+Smith et al. <span class="citation">(<a href="#ref-Smith2017a" role="doc-biblioref">Smith and Yun 2017</a>)</span> indicated that they
+had good results with the <code>FreeBayes</code> <span class="citation">(<a href="#ref-Garrison2012" role="doc-biblioref">Garrison and Marth 2012</a>)</span>. So I have
 initially included this tool here in addition to the<code>MiModD</code>
 mutation caller to evaluate their relative performance. They also found
 the the <code>BBMap</code> aligner yielded better results however this
@@ -1761,23 +1761,25 @@ expediency.</p>
 File (Local)</a></p>
 <p><a href="https://usegalaxy.eu/u/richardjacton/w/c-elegans-ems-mutagenesis-mutation-caller" class="uri">https://usegalaxy.eu/u/richardjacton/w/c-elegans-ems-mutagenesis-mutation-caller</a></p>
 <ul>
-<li>Adapter and Quality Trimming with <a href="https://github.com/OpenGene/fastp"><code>fastp</code></a> <span class="citation">[<a href="#ref-Chen2018" role="doc-biblioref">7</a>]</span></li>
+<li>Adapter and Quality Trimming with <a href="https://github.com/OpenGene/fastp"><code>fastp</code></a> <span class="citation">(<a href="#ref-Chen2018" role="doc-biblioref">Chen et
+al. 2018</a>)</span></li>
 <li>Alignment with <a href="https://github.com/BenLangmead/bowtie2"><code>bowtie2 --sensitive-local</code></a>
-<span class="citation">[<a href="#ref-Langmead2012" role="doc-biblioref">8</a>]</span></li>
+<span class="citation">(<a href="#ref-Langmead2012" role="doc-biblioref">Langmead and Salzberg 2012</a>)</span></li>
 <li><a href="https://github.com/samtools/samtools"><code>samtools view</code></a>
-requiring that reads are mapped in a proper pair <span class="citation">[<a href="#ref-Li2009b" role="doc-biblioref">9</a>]</span></li>
+requiring that reads are mapped in a proper pair <span class="citation">(<a href="#ref-Li2009b" role="doc-biblioref">Li et al.
+2009</a>)</span></li>
 <li>Removal of PCR duplicates with <a href="https://broadinstitute.github.io/picard/command-line-overview.html#MarkDuplicates"><code>Picard MarkDuplicates</code></a>
-<span class="citation">[<a href="#ref-BroadInstitute2019" role="doc-biblioref">10</a>]</span></li>
-<li>Left alignment of indels in the BAM files using <a href="https://github.com/ekg/freebayes"><code>FreeBayes</code></a> <span class="citation">[<a href="#ref-Garrison2012" role="doc-biblioref">6</a>]</span></li>
+<span class="citation">(<a href="#ref-BroadInstitute2019" role="doc-biblioref"><span>“Picard Toolkit”</span> 2019</a>)</span></li>
+<li>Left alignment of indels in the BAM files using <a href="https://github.com/ekg/freebayes"><code>FreeBayes</code></a> <span class="citation">(<a href="#ref-Garrison2012" role="doc-biblioref">Garrison and Marth 2012</a>)</span></li>
 <li><a href="https://github.com/ewels/MultiQC"><code>MultiQC</code></a>
 aggregating quality metrics from trimming, deduplication and alignment
-<span class="citation">[<a href="#ref-Ewels2016" role="doc-biblioref">11</a>]</span></li>
-<li>Variant calling with <a href="https://github.com/ekg/freebayes"><code>FreeBayes</code></a> <span class="citation">[<a href="#ref-Garrison2012" role="doc-biblioref">6</a>]</span>, <a href="https://mimodd.readthedocs.io/"><code>MiModD</code></a> <span class="citation">[<a href="#ref-Baumeister2013" role="doc-biblioref">12</a>]</span> variant caller and deletion
-caller</li>
+<span class="citation">(<a href="#ref-Ewels2016" role="doc-biblioref">Ewels et al. 2016</a>)</span></li>
+<li>Variant calling with <a href="https://github.com/ekg/freebayes"><code>FreeBayes</code></a> <span class="citation">(<a href="#ref-Garrison2012" role="doc-biblioref">Garrison and Marth 2012</a>)</span>, <a href="https://mimodd.readthedocs.io/"><code>MiModD</code></a> <span class="citation">(<a href="#ref-Baumeister2013" role="doc-biblioref"><span>“MiModD”</span> 2013</a>)</span> variant
+caller and deletion caller</li>
 <li>SNP effect annotation with <a href="http://snpeff.sourceforge.net/SnpEff.html"><code>SnfEff eff</code></a>
-<span class="citation">[<a href="#ref-Cingolani2012" role="doc-biblioref">13</a>]</span></li>
+<span class="citation">(<a href="#ref-Cingolani2012" role="doc-biblioref">Cingolani et al. 2012</a>)</span></li>
 <li>SNP type annotation with <a href="http://snpeff.sourceforge.net/SnpSift.html"><code>SnpSift Variant Type</code></a>
-<span class="citation">[<a href="#ref-Cingolani2012" role="doc-biblioref">13</a>]</span></li>
+<span class="citation">(<a href="#ref-Cingolani2012" role="doc-biblioref">Cingolani et al. 2012</a>)</span></li>
 </ul>
 </div>
 <div id="instructions-step-by-step" class="section level1" number="4">
@@ -1850,87 +1852,77 @@ maintainer of the mutant sets package via [github issues](<a href="https://githu
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="unnumbered">References</h1>
-<div id="refs" class="references csl-bib-body">
+<div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-Afgan2016" class="csl-entry">
-1. Afgan E, Baker D, Beek M van den, Blankenberg D, Bouvier D, Čech M,
-Chilton J, Clements D, Coraor N, Eberhard C, Grüning B, Guerler A,
-Hillman-Jackson J, Von Kuster G, Rasche E, Soranzo N, Turaga N, Taylor
-J, Nekrutenko A, Goecks J: <strong>The galaxy platform for accessible,
-reproducible and collaborative biomedical analyses: 2016
-update</strong>. <em>Nucleic Acids Research</em> 2016,
-<strong>44</strong>:W3–W10<a href="https://doi.org/10.1093/nar/gkw343">10.1093/nar/gkw343</a>Available:
-<a href="https://academic.oup.com/nar/article-lookup/doi/10.1093/nar/gkw343">https://academic.oup.com/nar/article-lookup/doi/10.1093/nar/gkw343.</a>
-</div>
-<div id="ref-Jalili2020" class="csl-entry">
-2. Jalili V, Afgan E, Gu Q, Clements D, Blankenberg D, Goecks J, Taylor
-J, Nekrutenko A: <strong>The galaxy platform for accessible,
-reproducible and collaborative biomedical analyses: 2020
-update</strong>. <em>Nucleic Acids Research</em> 2020,
-<strong>48</strong>:W395–W402<a href="https://doi.org/10.1093/nar/gkaa434">10.1093/nar/gkaa434</a>Available:
-<a href="https://academic.oup.com/nar/article/48/W1/W395/5849904">https://academic.oup.com/nar/article/48/W1/W395/5849904.</a>
-</div>
-<div id="ref-Doitsidou2016" class="csl-entry">
-3. Doitsidou M, Jarriault S, Poole RJ: <strong>Next-generation
-sequencing-based approaches for mutation mapping and identification in
-caenorhabditis elegans</strong>. <em>Genetics</em> 2016,
-<strong>204</strong>:451–474<a href="https://doi.org/10.1534/genetics.115.186197">10.1534/genetics.115.186197</a>Available:
-<a href="http://www.genetics.org/cgi/doi/10.1534/genetics.115.186197">http://www.genetics.org/cgi/doi/10.1534/genetics.115.186197.</a>
-</div>
-<div id="ref-Minevich2012" class="csl-entry">
-4. Minevich G, Park DS, Blankenberg D, Poole RJ, Hobert O:
-<strong>CloudMap: A cloud-based pipeline for analysis of mutant genome
-sequences</strong>. <em>Genetics</em> 2012,
-<strong>192</strong>:1249–1269<a href="https://doi.org/10.1534/genetics.112.144204">10.1534/genetics.112.144204</a>.
-</div>
-<div id="ref-Smith2017a" class="csl-entry">
-5. Smith HE, Yun S: <strong>Evaluating alignment and variant-calling
-software for mutation identification in c. Elegans by whole-genome
-sequencing</strong>. <em>PLOS ONE</em> 2017,
-<strong>12</strong>:e0174446<a href="https://doi.org/10.1371/journal.pone.0174446">10.1371/journal.pone.0174446</a>Available:
-<a href="https://dx.plos.org/10.1371/journal.pone.0174446">https://dx.plos.org/10.1371/journal.pone.0174446.</a>
-</div>
-<div id="ref-Garrison2012" class="csl-entry">
-6. Garrison E, Marth G: <strong>Haplotype-based variant detection from
-short-read sequencing</strong>. 2012, :1–9Available: <a href="http://arxiv.org/abs/1207.3907">http://arxiv.org/abs/1207.3907.</a>
+Afgan, Enis, Dannon Baker, Marius van den Beek, Daniel Blankenberg, Dave
+Bouvier, Martin Čech, John Chilton, et al. 2016. <span>“The Galaxy
+Platform for Accessible, Reproducible and Collaborative Biomedical
+Analyses: 2016 Update.”</span> <em>Nucleic Acids Research</em> 44 (W1):
+W3–10. <a href="https://doi.org/10.1093/nar/gkw343">https://doi.org/10.1093/nar/gkw343</a>.
 </div>
 <div id="ref-Chen2018" class="csl-entry">
-7. Chen S, Zhou Y, Chen Y, Gu J: <strong>Fastp: An ultra-fast all-in-one
-FASTQ preprocessor</strong>. <em>Bioinformatics</em> 2018,
-<strong>34</strong>:i884–i890<a href="https://doi.org/10.1093/bioinformatics/bty560">10.1093/bioinformatics/bty560</a>Available:
-<a href="https://academic.oup.com/bioinformatics/article/34/17/i884/5093234">https://academic.oup.com/bioinformatics/article/34/17/i884/5093234.</a>
-</div>
-<div id="ref-Langmead2012" class="csl-entry">
-8. Langmead B, Salzberg SL: <strong>Fast gapped-read alignment with
-bowtie 2</strong>. <em>Nature Methods</em> 2012,
-<strong>9</strong>:357–359<a href="https://doi.org/10.1038/nmeth.1923">10.1038/nmeth.1923</a>Available:
-<a href="http://www.ncbi.nlm.nih.gov/pubmed/22388286">http://www.ncbi.nlm.nih.gov/pubmed/22388286.</a>
-</div>
-<div id="ref-Li2009b" class="csl-entry">
-9. Li H, Handsaker B, Wysoker A, Fennell T, Ruan J, Homer N, Marth G,
-Abecasis G, Durbin R: <strong>The sequence alignment/map format and
-SAMtools</strong>. <em>Bioinformatics</em> 2009,
-<strong>25</strong>:2078–2079<a href="https://doi.org/10.1093/bioinformatics/btp352">10.1093/bioinformatics/btp352</a>Available:
-<a href="https://academic.oup.com/bioinformatics/article-lookup/doi/10.1093/bioinformatics/btp352">https://academic.oup.com/bioinformatics/article-lookup/doi/10.1093/bioinformatics/btp352.</a>
-</div>
-<div id="ref-BroadInstitute2019" class="csl-entry">
-10. Picard toolkit: 2019, Available: <a href="http://broadinstitute.github.io/picard/">http://broadinstitute.github.io/picard/.</a>
-</div>
-<div id="ref-Ewels2016" class="csl-entry">
-11. Ewels P, Magnusson M, Lundin S, Käller M: <strong>MultiQC: Summarize
-analysis results for multiple tools and samples in a single
-report.</strong> <em>Bioinformatics (Oxford, England)</em> 2016,
-<strong>32</strong>:3047–8<a href="https://doi.org/10.1093/bioinformatics/btw354">10.1093/bioinformatics/btw354</a>Available:
-<a href="http://www.ncbi.nlm.nih.gov/pubmed/27312411">http://www.ncbi.nlm.nih.gov/pubmed/27312411.</a>
-</div>
-<div id="ref-Baumeister2013" class="csl-entry">
-12. MiModD: 2013, Available: <a href="https://sourceforge.net/projects/mimodd/">https://sourceforge.net/projects/mimodd/.</a>
+Chen, Shifu, Yanqing Zhou, Yaru Chen, and Jia Gu. 2018. <span>“Fastp: An
+Ultra-Fast All-in-One FASTQ Preprocessor.”</span>
+<em>Bioinformatics</em> 34 (17): i884–90. <a href="https://doi.org/10.1093/bioinformatics/bty560">https://doi.org/10.1093/bioinformatics/bty560</a>.
 </div>
 <div id="ref-Cingolani2012" class="csl-entry">
-13. Cingolani P, Platts A, Wang LL, Coon M, Nguyen T, Wang L, Land SJ,
-Lu X, Ruden DM: <strong>A program for annotating and predicting the
-effects of single nucleotide polymorphisms, SnpEff</strong>.
-<em>Fly</em> 2012, <strong>6</strong>:80–92<a href="https://doi.org/10.4161/fly.19695">10.4161/fly.19695</a>Available:
-<a href="http://www.tandfonline.com/doi/abs/10.4161/fly.19695">http://www.tandfonline.com/doi/abs/10.4161/fly.19695.</a>
+Cingolani, Pablo, Adrian Platts, Le Lily Wang, Melissa Coon, Tung
+Nguyen, Luan Wang, Susan J. Land, Xiangyi Lu, and Douglas M. Ruden.
+2012. <span>“A Program for Annotating and Predicting the Effects of
+Single Nucleotide Polymorphisms, SnpEff.”</span> <em>Fly</em> 6 (2):
+80–92. <a href="https://doi.org/10.4161/fly.19695">https://doi.org/10.4161/fly.19695</a>.
+</div>
+<div id="ref-Doitsidou2016" class="csl-entry">
+Doitsidou, Maria, Sophie Jarriault, and Richard J. Poole. 2016.
+<span>“Next-Generation Sequencing-Based Approaches for Mutation Mapping
+and Identification in Caenorhabditis Elegans.”</span> <em>Genetics</em>
+204 (2): 451–74. <a href="https://doi.org/10.1534/genetics.115.186197">https://doi.org/10.1534/genetics.115.186197</a>.
+</div>
+<div id="ref-Ewels2016" class="csl-entry">
+Ewels, Philip, Måns Magnusson, Sverker Lundin, and Max Käller. 2016.
+<span>“MultiQC: Summarize Analysis Results for Multiple Tools and
+Samples in a Single Report.”</span> <em>Bioinformatics (Oxford,
+England)</em> 32 (19): 3047–48. <a href="https://doi.org/10.1093/bioinformatics/btw354">https://doi.org/10.1093/bioinformatics/btw354</a>.
+</div>
+<div id="ref-Garrison2012" class="csl-entry">
+Garrison, Erik, and Gabor Marth. 2012. <span>“Haplotype-Based Variant
+Detection from Short-Read Sequencing,”</span> July, 1–9. <a href="http://arxiv.org/abs/1207.3907">http://arxiv.org/abs/1207.3907</a>.
+</div>
+<div id="ref-Jalili2020" class="csl-entry">
+Jalili, Vahid, Enis Afgan, Qiang Gu, Dave Clements, Daniel Blankenberg,
+Jeremy Goecks, James Taylor, and Anton Nekrutenko. 2020. <span>“The
+Galaxy Platform for Accessible, Reproducible and Collaborative
+Biomedical Analyses: 2020 Update.”</span> <em>Nucleic Acids
+Research</em> 48 (W1): W395–402. <a href="https://doi.org/10.1093/nar/gkaa434">https://doi.org/10.1093/nar/gkaa434</a>.
+</div>
+<div id="ref-Langmead2012" class="csl-entry">
+Langmead, Ben, and Steven L Salzberg. 2012. <span>“Fast Gapped-Read
+Alignment with Bowtie 2.”</span> <em>Nature Methods</em> 9 (4): 357–59.
+<a href="https://doi.org/10.1038/nmeth.1923">https://doi.org/10.1038/nmeth.1923</a>.
+</div>
+<div id="ref-Li2009b" class="csl-entry">
+Li, H., B. Handsaker, A. Wysoker, T. Fennell, J. Ruan, N. Homer, G.
+Marth, G. Abecasis, and R. Durbin. 2009. <span>“The Sequence
+Alignment/Map Format and SAMtools.”</span> <em>Bioinformatics</em> 25
+(16): 2078–79. <a href="https://doi.org/10.1093/bioinformatics/btp352">https://doi.org/10.1093/bioinformatics/btp352</a>.
+</div>
+<div id="ref-Baumeister2013" class="csl-entry">
+<span>“MiModD.”</span> 2013. Baumeister Lab. <a href="https://sourceforge.net/projects/mimodd/">https://sourceforge.net/projects/mimodd/</a>.
+</div>
+<div id="ref-Minevich2012" class="csl-entry">
+Minevich, Gregory, Danny S. Park, Daniel Blankenberg, Richard J. Poole,
+and Oliver Hobert. 2012. <span>“CloudMap: A Cloud-Based Pipeline for
+Analysis of Mutant Genome Sequences.”</span> <em>Genetics</em> 192 (4):
+1249–69. <a href="https://doi.org/10.1534/genetics.112.144204">https://doi.org/10.1534/genetics.112.144204</a>.
+</div>
+<div id="ref-BroadInstitute2019" class="csl-entry">
+<span>“Picard Toolkit.”</span> 2019. Broad Institute. <a href="http://broadinstitute.github.io/picard/">http://broadinstitute.github.io/picard/</a>.
+</div>
+<div id="ref-Smith2017a" class="csl-entry">
+Smith, Harold E., and Sijung Yun. 2017. <span>“Evaluating Alignment and
+Variant-Calling Software for Mutation Identification in c. Elegans by
+Whole-Genome Sequencing.”</span> Edited by David J. Reiner. <em>PLOS
+ONE</em> 12 (3): e0174446. <a href="https://doi.org/10.1371/journal.pone.0174446">https://doi.org/10.1371/journal.pone.0174446</a>.
 </div>
 </div>
 </div>

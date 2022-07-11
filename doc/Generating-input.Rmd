@@ -13,7 +13,7 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 bibliography: "assets/bib.bib"
-csl: "assets/genomebiology.csl"
+# csl: "assets/genomebiology.csl"
 link-citations: yes
 linkcolor: blue
 ---
