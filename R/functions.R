@@ -1,3 +1,4 @@
+enableBookmarking(store = "server")
 # Global data -----------------------------------------------------------------
 # 
 gtfnames <- c(

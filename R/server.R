@@ -345,4 +345,9 @@ server <- function(input, output) {
 			vroom::vroom_write(delTab(), file)
 		}
 	)
+	
+	# | bookmarking -----------------------------------------------------------
+	observeEvent(input$bookmark, {
+		session$doBookmark()
+	})
 }

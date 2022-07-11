@@ -2,8 +2,8 @@
 # MutantSets
 
 <!-- badges: start -->
-[![Codecov test coverage](https://codecov.io/gh/CECADBioinformaticsCoreFacility/MutantSets/branch/master/graph/badge.svg)](https://codecov.io/gh/CECADBioinformaticsCoreFacility/MutantSets?branch=master)
-[![Travis build status](https://travis-ci.com/CECADBioinformaticsCoreFacility/MutantSets.svg?branch=master)](https://travis-ci.com/CECADBioinformaticsCoreFacility/MutantSets)
+[![Codecov test coverage](https://codecov.io/gh/CECADBioinformaticsCoreFacility/MutantSets/branch/master/graph/badge.svg)](https://app.codecov.io/gh/CECADBioinformaticsCoreFacility/MutantSets?branch=master)
+[![R-CMD-check](https://github.com/CECADBioinformaticsCoreFacility/MutantSets/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/CECADBioinformaticsCoreFacility/MutantSets/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 The goal of MutantSets is to permit the exploration of the results of whole genome sequencing and mutation calling in *C. elegans*, with the goal of identify candidate mutations responsible for phenotypes in genetic screens though mapping by sequencing.

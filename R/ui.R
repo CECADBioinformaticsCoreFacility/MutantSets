@@ -1,4 +1,5 @@
 # UI --------------------------------------------------------------------------
+ui <- function(request) {
 ## |Sidebar -------------------------------------------------------------------
 
 # Define UI for application that draws a histogram
@@ -7,6 +8,7 @@ sidebar <- bs4Dash::dashboardSidebar(
 		fileInput("vcf", "Select a VCF file", accept = ".vcf"),
 		fileInput("gff", "Select a gff file", accept = ".gff"),
 		actionButton("go","Start / Apply Filters"),
+		bookmarkButton("bookmark"),
 		#menuItem("Options", tabName = "options", icon = icon("th")),
 		menuItem(
 			"Filtering", tabName = "table", icon = icon("table")
@@ -191,3 +193,6 @@ ui <- bs4Dash::dashboardPage(
 	sidebar,
 	body
 )
+
+return(ui)
+}
