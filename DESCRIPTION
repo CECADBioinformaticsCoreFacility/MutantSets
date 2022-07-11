@@ -31,7 +31,8 @@ Imports:
     plotly,
     scales,
     tibble,
-    htmlwidgets
+    htmlwidgets,
+    shinydashboard
 Suggests: 
     testthat,
     covr,
