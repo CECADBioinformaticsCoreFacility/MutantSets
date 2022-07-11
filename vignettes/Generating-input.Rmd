@@ -163,11 +163,3 @@ Please direct bug reports, feature requests, and questions to the maintainer of 
 
 # References
 
-```{r, echo=FALSE, include=FALSE, eval=FALSE}
-getCitations::getCitations(
-	normalizePath("C-elegans_Backcross_mutation_calling_Galaxy_Workflow.Rmd"),
-	normalizePath("assets/bib.bib"),
-	"~/Documents/bibtex/library.bib"
-)
-```
-
