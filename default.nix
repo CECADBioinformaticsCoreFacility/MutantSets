@@ -3,7 +3,11 @@
 # >rix::rix(r_ver = "4.3.1",
 #  > r_pkgs = c("rix",
 #  > "renv"),
-#  > project_path = "../MutantSets/")
+#  > git_pkgs = list(list(package_name = "MutantSets",
+#  > repo_url = "https://github.com/CECADBioinformaticsCoreFacility/MutantSets",
+#  > commit = "fe0f118866a6b14ca3955a0328eaea52476aa1b7")),
+#  > project_path = "../MutantSets/",
+#  > overwrite = TRUE)
 # It uses the `rstats-on-nix` fork of `nixpkgs` which provides improved
 # compatibility with older R versions and R packages for Linux/WSL and
 # Apple Silicon computers.
@@ -13,35 +17,39 @@ let
  
   rpkgs = builtins.attrValues {
     inherit (pkgs.rPackages) 
-      rsconnect
-      pkgload
-      shinybusy
-      shinyWidgets
-      shinyjs
-      purrr
-      tidyr
-      DT
-      vroom
-      vcfR
-      future
-      ggplot2
-      plotly
-      scales
-      tibble
-      htmlwidgets
-      shinydashboard
-      lifecycle
-      shiny
-      bs4Dash
-      dplyr
-      future_apply
-      R_utils
-      testthat
-      rmarkdown
-      knitr
-      devtools
       renv;
   };
+ 
+    MutantSets = (pkgs.rPackages.buildRPackage {
+      name = "MutantSets";
+      src = pkgs.fetchgit {
+        url = "https://github.com/CECADBioinformaticsCoreFacility/MutantSets";
+        rev = "fe0f118866a6b14ca3955a0328eaea52476aa1b7";
+        sha256 = "sha256-OFqGwEEl+gqSRn0P1lLKdOgIUBk0nELVqx+luZXK0lM=";
+      };
+      propagatedBuildInputs = builtins.attrValues {
+        inherit (pkgs.rPackages) 
+          shiny
+          bs4Dash
+          dplyr
+          shinybusy
+          shinyWidgets
+          shinyjs
+          purrr
+          tidyr
+          DT
+          vroom
+          vcfR
+          future
+          ggplot2
+          plotly
+          scales
+          tibble
+          htmlwidgets
+          shinydashboard
+          lifecycle;
+      };
+    });
     
   system_packages = builtins.attrValues {
     inherit (pkgs) 
@@ -61,6 +69,6 @@ pkgs.mkShell {
    LC_PAPER = "en_US.UTF-8";
    LC_MEASUREMENT = "en_US.UTF-8";
 
-  buildInputs = [  rpkgs  system_packages   ];
+  buildInputs = [ MutantSets rpkgs  system_packages   ];
   
 }
