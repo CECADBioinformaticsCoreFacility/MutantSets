@@ -13,6 +13,8 @@ The goal of MutantSets is to permit the exploration of the results of whole geno
 
 You can use [MutantSets](https://richardjacton.shinyapps.io/MutantSets/) at shinyapps.io
 
+Note that this instance is not very powerful and may crash with larger `.vcf` if they exceed the available memory.
+
 [Documentation](https://cecadbioinformaticscorefacility.github.io/MutantSets)
 
 ## Local R Installation
@@ -27,6 +29,12 @@ NB on more recent R versions there may be issues install the `vcfR` package if t
 
 ```r
 remotes::install_github("knausb/vcfR")
+```
+
+Alternatively if you use `nix` this git repo contains a `default.nix` file so you clone it, enter the repo, and the following command to start the app.
+
+```
+nix-shell --command "Rscript -e 'MutantSets::launchApp()'"
 ```
 
 ## Example
