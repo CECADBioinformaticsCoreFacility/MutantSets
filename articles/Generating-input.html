@@ -72,7 +72,7 @@ elegans</em> EMS mutagenesis and Backcross Experiments</h1>
                         <h4 data-toc-skip class="author">Richard J.
 Acton</h4>
             
-            <h4 data-toc-skip class="date">2025-02-25</h4>
+            <h4 data-toc-skip class="date">2025-12-22</h4>
       
 
       <div class="hidden name"><code>Generating-input.Rmd</code></div>
@@ -143,8 +143,8 @@ by sequencing:</p>
 </ol>
 <p>This pipeline is currently only compatible with 2 of them,
 EMS-density mapping &amp; Variant discovery mapping (VDM).</p>
-<p><img src="graphics%2FDoitsidou2016_fig2.png"></p>
-<p><img src="graphics%2FDoitsidou2016_fig3.png"></p>
+<p><img src="graphics/Doitsidou2016_fig2.png"></p>
+<p><img src="graphics/Doitsidou2016_fig3.png"></p>
 <div class="section level3">
 <h3 id="research-need">Research Need<a class="anchor" aria-label="anchor" href="#research-need"></a>
 </h3>
@@ -219,24 +219,24 @@ aggregating quality metrics from trimming, deduplication and alignment
 <h2 id="instructions-step-by-step">Instructions (Step-by-Step)<a class="anchor" aria-label="anchor" href="#instructions-step-by-step"></a>
 </h2>
 <p><strong>1. Upload Data to galaxy</strong></p>
-<p><img src="graphics%2Fupload.png"></p>
+<p><img src="graphics/upload.png"></p>
 <p><strong>2. Select all fastq files and create a paired
 list</strong></p>
-<p><img src="graphics%2Fselect-all.png"></p>
-<p><img src="graphics%2Fbuild-list-paired-data.png"></p>
+<p><img src="graphics/select-all.png"></p>
+<p><img src="graphics/build-list-paired-data.png"></p>
 <p><strong>3. Pair the fastq files</strong></p>
-<p><img src="graphics%2Fpairing-dialog.png"></p>
+<p><img src="graphics/pairing-dialog.png"></p>
 <p><strong>4. Import the <a href="https://usegalaxy.eu/u/richardjacton/w/c-elegans-ems-mutagenesis-mutation-caller" class="external-link">workflow</a></strong></p>
-<p><img src="graphics%2Fimport_workflow.png"></p>
+<p><img src="graphics/import_workflow.png"></p>
 <p><strong>5. Run the workflow</strong></p>
 <p>Select the paired list object and a genome sequence file as
 inputs</p>
-<p><img src="graphics%2Frun_workflow.png"></p>
+<p><img src="graphics/run_workflow.png"></p>
 <p><strong>6. Check Quality Control Information</strong></p>
 <p>Inspect the <code>MultiQC</code> output for signs of technical
 problems with your data. Consult with your friendly local
 bioinformatician if there are QC issues you can’t diagnose.</p>
-<p><img src="graphics%2Fview_multiqc.png"></p>
+<p><img src="graphics/view_multiqc.png"></p>
 <p><strong>7. Preliminary quality filtering
 <code>SnpSift filter</code></strong></p>
 <p>Locate the <a href="https://pcingola.github.io/SnpEff/SnpSift.html#filter" class="external-link"><code>SnpSift filter</code></a>
@@ -249,12 +249,12 @@ initial filtering is advisable as the full-sized VCF files may be too
 large to be easily read by the candidate mutant inspection tool in the
 next steps. You can check how many lines are in your VCF files by
 selecting them in the Galaxy history.</p>
-<p><img src="graphics%2FSnpSift_filter.png"></p>
+<p><img src="graphics/SnpSift_filter.png"></p>
 <p><strong>8. Download Data</strong></p>
 <p>The main <code>FreeBayes</code> VCF file:</p>
-<p><img src="graphics%2FDownload_filtered_vcf.png"></p>
+<p><img src="graphics/Download_filtered_vcf.png"></p>
 <p>The <code>MiModD</code> deletion calls:</p>
-<p><img src="graphics%2FDownload_MiModD_deletions.png"></p>
+<p><img src="graphics/Download_MiModD_deletions.png"></p>
 <p><strong>9. Load the results in the <code>MutantSets</code> Shiny App
 to identify candidate mutations</strong></p>
 <p>If running the App locally, install the <a href="https://www.r-project.org/" class="external-link"><code>R</code></a> package from: <a href="https://github.com/RichardJActon/MutantSets" class="external-link uri">https://github.com/RichardJActon/MutantSets</a></p>
@@ -379,7 +379,7 @@ ONE</em> 12 (3): e0174446. <a href="https://doi.org/10.1371/journal.pone.0174446
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
       </footer>
